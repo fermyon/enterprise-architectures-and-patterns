@@ -1,0 +1,18 @@
+spin_manifest_version = 2
+
+[application]
+name = "scenario"
+version = "0.1.0"
+authors = ["Thorsten Hans <thorsten.hans@fermyon.com>"]
+description = ""
+
+[[trigger.http]]
+route = "/..."
+component = "scenario"
+
+[component.scenario]
+source = "target/wasm32-wasi/release/scenario.wasm"
+allowed_outbound_hosts = []
+[component.scenario.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]

@@ -1,0 +1,17 @@
+[package]
+name = "scenario"
+authors = ["Thorsten Hans <thorsten.hans@fermyon.com>"]
+description = ""
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = "1"
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.114"
+spin-sdk = "2.2.0"
+
+[workspace]
