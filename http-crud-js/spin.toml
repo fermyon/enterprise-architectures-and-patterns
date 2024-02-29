@@ -1,0 +1,27 @@
+spin_manifest_version = 2
+
+[application]
+authors = ["Thorsten Hans <thorsten.hans@fermyon.com>"]
+description = ""
+name = "http-crud-js"
+version = "0.1.0"
+
+[variables]
+db_connection_string = { required = true }
+
+
+[[trigger.http]]
+route = "/..."
+component = "http-crud-js"
+
+[component.http-crud-js]
+source = "target/http-crud-js.wasm"
+exclude_files = ["**/node_modules"]
+allowed_outbound_hosts = ["postgres://localhost"]
+
+[component.http-crud-js.variables]
+db_connection_string = "{{ db_connection_string }}"
+
+[component.http-crud-js.build]
+command = "npm run build"
+watch = ["src/**/*.js", "package.json"]
