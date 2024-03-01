@@ -1,0 +1,21 @@
+spin_manifest_version = 2
+
+[application]
+name = "caching-rust"
+version = "0.1.0"
+authors = ["Thorsten Hans <thorsten.hans@fermyon.com>"]
+description = ""
+
+[[trigger.http]]
+route = "/..."
+component = "caching-rust"
+
+[component.caching-rust]
+source = "target/wasm32-wasi/release/caching_rust.wasm"
+allowed_outbound_hosts = []
+key_value_stores = ["default"]
+sqlite_databases = ["default"]
+
+[component.caching-rust.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]
