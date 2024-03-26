@@ -2,15 +2,16 @@
 #![warn(rust_2021_compatibility)]
 
 use anyhow::bail;
-use commands::{Commands, CreateProductModel, UpdateProductModel};
-use queries::Queries;
+use cqrs_commands::{Commands, CreateProductModel, UpdateProductModel};
+use cqrs_queries::Queries;
 use spin_sdk::http::{IntoResponse, Params, Request, Response, Router};
 use spin_sdk::http_component;
 
-/// A simple Spin HTTP component.
 #[http_component]
 fn handle_cqrs_rust(req: Request) -> anyhow::Result<impl IntoResponse> {
+    ensure_database()?;
     let mut router = Router::default();
+
     // register routes for queries
     router.get("/products", query_all_products);
     router.get("/products/:id", query_product_by_id);
@@ -22,6 +23,10 @@ fn handle_cqrs_rust(req: Request) -> anyhow::Result<impl IntoResponse> {
 
     // handle all the requests
     Ok(router.handle(req))
+}
+
+fn ensure_database() -> anyhow::Result<()> {
+    Commands::ensure_database()
 }
 
 fn query_all_products(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {

@@ -1,0 +1,3 @@
+[sqlite_database.cqrs]
+type = "spin"
+path = ".spin/cqrs.db"

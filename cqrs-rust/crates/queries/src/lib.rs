@@ -9,6 +9,7 @@ use spin_sdk::sqlite::{Connection, Value};
 mod models;
 pub use crate::models::{ProductDetailsModel, ProductListModel};
 
+const DB_NAME: &str = "cqrs";
 const QUERY_ALL_COMMAND: &str = "SELECT ID, NAME FROM PRODUCTS ORDER BY NAME ASC";
 const QUERY_SINGLE_COMMAND: &str = "SELECT ID, NAME, DESCRIPTION FROM PRODUCTS WHERE ID = ?";
 
@@ -18,7 +19,7 @@ pub struct Queries {}
 impl Queries {
     /// Query to retrieve all products
     pub fn all_products() -> anyhow::Result<Vec<ProductListModel>> {
-        let con = Connection::open_default()?;
+        let con = Connection::open(DB_NAME)?;
         let query_result = con.execute(QUERY_ALL_COMMAND, &[])?;
         let products = query_result
             .rows()
@@ -41,7 +42,7 @@ impl Queries {
 
     /// Query to retrieve a particular product using its identifier
     pub fn product_by_id(id: String) -> anyhow::Result<Option<ProductDetailsModel>> {
-        let con = Connection::open_default()?;
+        let con = Connection::open(DB_NAME)?;
         let params = vec![Value::Text(id)];
         let query_result = con.execute(QUERY_SINGLE_COMMAND, &params)?;
         let product = match query_result.rows().next() {

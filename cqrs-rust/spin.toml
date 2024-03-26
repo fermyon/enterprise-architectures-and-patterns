@@ -4,7 +4,7 @@ spin_manifest_version = 2
 name = "cqrs-rust"
 version = "0.1.0"
 authors = ["Fermyon Engineering <engineering@fermyon.com>"]
-description = "A fairly simple CQRS sample"
+description = "A fairly simple CQRS implementation"
 
 [[trigger.http]]
 route = "/..."
@@ -13,7 +13,7 @@ component = "cqrs-rust"
 [component.cqrs-rust]
 source = "target/wasm32-wasi/release/cqrs_rust.wasm"
 allowed_outbound_hosts = []
-sqlite_databases = ["default"]
+sqlite_databases = ["cqrs"]
 
 [component.cqrs-rust.build]
 command = "cargo build --target wasm32-wasi --release"
