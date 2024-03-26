@@ -33,11 +33,41 @@ To run the sample locally, you must provide the `local.toml` as runtime config f
 spin build
 
 # Run the sample
-spin up --sqlite @migration.sql
+spin up --sqlite @migrations.sql --runtime-config-file ./local.toml
 Logging component stdio to ".spin/logs/"
 Storing default SQLite data to ".spin/sqlite_db.db"
 
 Serving http://127.0.0.1:3000
 Available Routes:
   cqrs-go: http://127.0.0.1:3000 (wildcard)
+```
+
+### Fermyon Cloud
+
+You can deploy this sample to Fermyon Cloud following the steps below:
+
+```bash
+# Authenticate
+spin cloud login
+
+# Deploy the sample to Fermyon Cloud
+# This will ask if a new database should be created or an existing one should be used
+# Answer the question with "create a new database"
+spin deploy
+Uploading cqrs-go version 0.1.0 to Fermyon Cloud...
+Deploying...
+App "cqrs-go" accesses a database labeled "cqrs"
+    Would you like to link an existing database or create a new database?: Create a new database and link the app to it
+What would you like to name your database?
+    Note: This name is used when managing your database at the account level. The app "cqrs-go" will refer to this database by the label "cqrs".
+    Other apps can use different labels to refer to the same database.: gentle-whale
+Creating database named 'gentle-whale'
+Waiting for application to become ready........ ready
+
+View application:   https://cqrs-go-8csubcks.fermyon.app/
+Manage application: https://cloud.fermyon.com/app/cqrs-go
+
+
+# Ensure tables are created in the new database (here gentle-whale)
+spin cloud sqlite execute --database gentle-whale @migrations.sql
 ```

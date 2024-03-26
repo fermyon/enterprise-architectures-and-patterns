@@ -39,7 +39,7 @@ Supported content types (by specifying the `Content-Type` HTTP-header):
 
 ## Running the Sample
 
-## Local (`spin up`)
+### Local (`spin up`)
 
 The following snippet shows how to run the sample on your local machine:
 
@@ -51,7 +51,7 @@ spin build
 spin up
 ```
 
-## Fermyon Cloud
+### Fermyon Cloud
 
 You can deploy this sample to Fermyon Cloud following the steps below:
 
