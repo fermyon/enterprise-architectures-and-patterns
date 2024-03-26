@@ -18,6 +18,7 @@ component = "http-crud-js"
 source = "target/http-crud-js.wasm"
 exclude_files = ["**/node_modules"]
 allowed_outbound_hosts = ["postgres://localhost"]
+# foo
 
 [component.http-crud-js.variables]
 db_connection_string = "{{ db_connection_string }}"
