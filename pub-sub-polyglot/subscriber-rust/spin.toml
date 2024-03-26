@@ -1,0 +1,24 @@
+spin_manifest_version = 2
+
+[application]
+name = "subscriber-rust"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+
+[variables]
+redis_connection_string = { required = true }
+redis_channel = { required = true }
+
+[application.trigger.redis]
+address = "{{ redis_connection_string }}"
+
+[[trigger.redis]]
+channel = "{{ redis_channel }}"
+component = "subscriber-rust"
+
+[component.subscriber-rust]
+source = "target/wasm32-wasi/release/subscriber_rust.wasm"
+allowed_outbound_hosts = []
+[component.subscriber-rust.build]
+command = "cargo build --target wasm32-wasi --release"

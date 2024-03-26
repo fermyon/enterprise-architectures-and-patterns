@@ -1,0 +1,10 @@
+[package]
+name = "mass-publisher"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.81"
+chrono = "0.4.35"
+redis = "0.24.0"
