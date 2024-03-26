@@ -1,0 +1,27 @@
+spin_manifest_version = 2
+
+[application]
+name = "cors-rust"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+
+[[trigger.http]]
+route = "/..."
+component = "cors-rust"
+
+[component.cors-rust]
+source = "target/wasm32-wasi/release/cors_rust.wasm"
+allowed_outbound_hosts = []
+sqlite_databases = ["default"]
+
+[component.cors-rust.variables]
+cors_allowed_origins = "http://localhost:4200"
+cors_allowed_methods = "*"
+cors_allowed_headers = "*"
+cors_allow_credentials = "true"
+cors_max_age = "3600"
+
+[component.cors-rust.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]
