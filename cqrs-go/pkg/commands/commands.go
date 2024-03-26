@@ -5,6 +5,8 @@ import (
 	"github.com/google/uuid"
 )
 
+const dbName string = "cqrs"
+
 // Request model for creating new products
 type CreateProductModel struct {
 	Name        string `json:"name"`
@@ -39,7 +41,7 @@ const (
 
 // Command to create a new product
 func CreateProduct(model CreateProductModel) (*ProductCreatedModel, error) {
-	con := sqlite.Open("default")
+	con := sqlite.Open(dbName)
 	defer con.Close()
 	id, err := uuid.NewRandom()
 	if err != nil {
@@ -59,7 +61,7 @@ func CreateProduct(model CreateProductModel) (*ProductCreatedModel, error) {
 
 // Command to update a particular product
 func UpdateProduct(id string, model UpdateProductModel) (*ProductUpdatedModel, error) {
-	con := sqlite.Open("default")
+	con := sqlite.Open(dbName)
 	defer con.Close()
 	res, err := con.Query(commandUpdateProduct, model.Name, model.Description, id)
 	if err != nil {
@@ -79,7 +81,7 @@ func UpdateProduct(id string, model UpdateProductModel) (*ProductUpdatedModel, e
 
 // Command to delete a particular product
 func DeleteProduct(id string) (bool, error) {
-	con := sqlite.Open("default")
+	con := sqlite.Open(dbName)
 	defer con.Close()
 	res, err := con.Query(commandDeleteProduct, id)
 	if err != nil {
@@ -90,4 +92,11 @@ func DeleteProduct(id string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+func EnsureDatabase() error {
+	con := sqlite.Open(dbName)
+	defer con.Close()
+	_, err := con.Exec("CREATE TABLE IF NOT EXISTS PRODUCTS (ID VARCHAR(36) PRIMARY KEY, NAME TEXT NOT NULL, DESCRIPTION TEXT NOT NULL)")
+	return err
 }

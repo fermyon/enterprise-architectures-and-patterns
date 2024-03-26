@@ -4,6 +4,8 @@ import (
 	"github.com/fermyon/spin/sdk/go/v2/sqlite"
 )
 
+const dbName string = "cqrs"
+
 // Response model used for a particular product, queried as part of a list
 type ProductListModel struct {
 	Id   string `json:"id"`
@@ -24,9 +26,9 @@ const (
 
 // Query to retrieve all products as a list
 func AllProducts() ([]*ProductListModel, error) {
-	var products []*ProductListModel
+	products := make([]*ProductListModel, 0)
 
-	con := sqlite.Open("default")
+	con := sqlite.Open(dbName)
 	defer con.Close()
 	rows, err := con.Query(queryAllProducts)
 	if err != nil {
@@ -45,7 +47,7 @@ func AllProducts() ([]*ProductListModel, error) {
 
 // Query to retrieve a particular product using its identifier
 func ProductById(id string) (*ProductDetailsModel, error) {
-	con := sqlite.Open("default")
+	con := sqlite.Open(dbName)
 	defer con.Close()
 	rows, err := con.Query(queryProductById, id)
 	if err != nil {

@@ -13,7 +13,14 @@ import (
 )
 
 func init() {
+
 	spinhttp.Handle(func(w http.ResponseWriter, r *http.Request) {
+		err := commands.EnsureDatabase()
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(500)
+			return
+		}
 		router := spinhttp.NewRouter()
 
 		// register queries
@@ -27,7 +34,6 @@ func init() {
 
 		// handle the request using the router
 		router.ServeHTTP(w, r)
-
 	})
 }
 
