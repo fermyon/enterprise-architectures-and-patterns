@@ -1,0 +1,22 @@
+spin_manifest_version = 2
+
+[application]
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+name = "http-crud-js-sqlite"
+version = "0.1.0"
+
+
+[[trigger.http]]
+route = "/..."
+component = "http-crud-js-sqlite"
+
+[component.http-crud-js-sqlite]
+source = "target/http-crud-js-sqlite.wasm"
+exclude_files = ["**/node_modules"]
+allowed_outbound_hosts = []
+sqlite_databases = ["crud"]
+
+[component.http-crud-js-sqlite.build]
+command = "npm run build"
+watch = ["src/**/*.js", "package.json"]

@@ -1,0 +1,3 @@
+[sqlite_database.crud]
+type = "spin"
+path = ".spin/crud.db"
