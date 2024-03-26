@@ -26,7 +26,7 @@ fn handle_info(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
             r#"Please issue any of the following requests
 
 GET /data           -> Returns a list of items
-GET /data/:id       -> Returns a single item (you can provide either string of int as :id)
+GET /data/:id       -> Returns a single item (you can either provide any string of any int as :id)
 
 Supported content types (by specifying the Content-Type header):
 
