@@ -13,3 +13,4 @@ Each folder contains a self-contained example, including some high-level explana
 - [Polyglot Publish-Subscribe](./pub-sub-polyglot/)
 - [Content Negotiation](./content-negotiation-rust/)
 - [Transparent Caching](./caching-rust/)
+- [Cross-Origin Resource Sharing (CORS)](./cors-rust/)

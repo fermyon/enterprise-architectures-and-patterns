@@ -1,8 +1,8 @@
-# CQRS (Command and Query Responsibility Segregation)
+# Command and Query Responsibility Segregation (CQRS)
 
-This folder contains a simple CQRS (Command and Query Responsibility Segregation) implementation written in Rust.
+This folder contains a simple Command and Query Responsibility Segregation (CQRS) implementation written in Rust.
 
-## What is CQRS (Command and Query Responsibility Segregation)
+## What is Command and Query Responsibility Segregation (CQRS)
 
 CQRS is a software architectural pattern that separates the responsibility of handling commands (requests that change the system's state) from handling queries (requests that fetch data without modifying state). In a CQRS architecture, commands are handled by a separate component or layer known as the Command side, while queries are handled by another component or layer called the Query side. This segregation allows each side to be optimized independently, as they often have different scalability, performance, and optimization requirements.
 
