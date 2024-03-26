@@ -9,6 +9,9 @@ use spin_sdk::http_component;
 
 #[http_component]
 fn handle_cqrs_rust(req: Request) -> anyhow::Result<impl IntoResponse> {
+    // todo: refactor this to use migration.sql when running locally or in cloud
+    // for SpinKube and Fermyon Platform for Kubernetes the corresponding
+    // database needs to be preconfigured upon deployment
     ensure_database()?;
     let mut router = Router::default();
 

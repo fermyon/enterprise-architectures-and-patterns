@@ -15,6 +15,9 @@ import (
 func init() {
 
 	spinhttp.Handle(func(w http.ResponseWriter, r *http.Request) {
+		// todo: refactor this to use migration.sql when running locally or in cloud
+		// for SpinKube and Fermyon Platform for Kubernetes the corresponding
+		// database needs to be preconfigured upon deployment
 		err := commands.EnsureDatabase()
 		if err != nil {
 			fmt.Println(err)

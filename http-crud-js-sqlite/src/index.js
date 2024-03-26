@@ -13,6 +13,9 @@ router.delete("/items/:id", ({ params }) => deleteItemById(params.id));
 router.all("*", () => notFound("Endpoint not found"));
 
 export async function handleRequest(request) {
+    // todo: refactor this to use migration.sql when running locally or in cloud
+    // for SpinKube and Fermyon Platform for Kubernetes the corresponding
+    // database needs to be preconfigured upon deployment
     seed();
     let fullUrl = request.headers["spin-full-url"];
     let path = request.headers["spin-path-info"];
