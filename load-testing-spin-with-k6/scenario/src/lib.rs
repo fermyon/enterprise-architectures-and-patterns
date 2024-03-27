@@ -2,24 +2,6 @@ use serde::Serialize;
 use spin_sdk::http::{IntoResponse, Params, Request, Response, Router};
 use spin_sdk::http_component;
 
-#[derive(Debug, Serialize)]
-pub struct Sample {
-    value: String,
-    key: i8,
-    active: bool,
-}
-
-impl Default for Sample {
-    fn default() -> Self {
-        Self {
-            value: "What is the meaning of life?".to_string(),
-            key: 42,
-            active: true,
-        }
-    }
-}
-
-/// A simple Spin HTTP component.
 #[http_component]
 fn handle_scenario(req: Request) -> anyhow::Result<impl IntoResponse> {
     let mut router = Router::default();
@@ -43,4 +25,21 @@ fn return_text(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
         .header("content-type", "text/plain")
         .body("Some static text value")
         .build())
+}
+
+#[derive(Debug, Serialize)]
+pub struct Sample {
+    value: String,
+    key: i8,
+    active: bool,
+}
+
+impl Default for Sample {
+    fn default() -> Self {
+        Self {
+            value: "What is the meaning of life?".to_string(),
+            key: 42,
+            active: true,
+        }
+    }
 }
