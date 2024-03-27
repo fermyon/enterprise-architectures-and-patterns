@@ -15,3 +15,4 @@ Each folder contains a self-contained example, including some high-level explana
 - [Content Negotiation](./content-negotiation-rust/)
 - [Transparent Caching](./caching-rust/)
 - [Cross-Origin Resource Sharing (CORS)](./cors-rust/)
+- [How to load test Spin Apps with Grafana k6](./load-testing-spin-with-k6/)
