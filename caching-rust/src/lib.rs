@@ -29,6 +29,7 @@ fn invalidate_all(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
         Err(_) => Response::new(500, "Error invalidating cache"),
     })
 }
+
 fn get_all_items(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
     // 1. Check if data is in cache, if so return from there
     let key = Item::get_cache_key_for_all();

@@ -1,0 +1,3 @@
+[key_value_store.cache]
+type = "spin"
+path = ".spin/cache.db"
