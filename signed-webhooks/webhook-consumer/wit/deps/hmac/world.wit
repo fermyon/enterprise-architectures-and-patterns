@@ -1,0 +1,22 @@
+package fermyon:hmac@0.1.0;
+
+world signing {
+    export sign;
+    export types;
+    export verify;
+}
+
+interface types {
+    type error = string;
+}
+interface sign {
+    use types.{error};
+    sign: func(data: list<u8>, keyvalue: list<u8>) -> result<list<u8>, error>;
+}
+
+interface verify {
+    verify: func(data: list<u8>, keyvalue: list<u8>, tag: list<u8>) -> bool;
+}
+
+
+

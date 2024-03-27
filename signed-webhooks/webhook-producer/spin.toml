@@ -1,0 +1,20 @@
+spin_manifest_version = 2
+
+[application]
+name = "webhook-producer"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+
+[[trigger.http]]
+route = "/..."
+component = "webhook-producer"
+
+[component.webhook-producer]
+source = "target/wasm32-wasi/release/composed.wasm"
+sqlite_databases = ["default"]
+allowed_outbound_hosts = ["http://localhost:3001", "http://localhost:3002"]
+
+[component.webhook-producer.build]
+command = "cargo component build --release && wasm-tools compose -d ./../hmac/target/wasm32-wasi/release/hmac.wasm ./target/wasm32-wasi/release/webhook_producer.wasm -o ./target/wasm32-wasi/release/composed.wasm"
+watch = ["src/**/*.rs", "Cargo.toml"]

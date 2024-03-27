@@ -1,0 +1,5 @@
+package fermyon:webhooks-producer@0.1.0;
+
+world signing {
+    import fermyon:hmac/sign@0.1.0;
+}
