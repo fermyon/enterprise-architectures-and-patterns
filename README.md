@@ -6,6 +6,7 @@ Each folder contains a self-contained example, including some high-level explana
 
 ## Architectures & Patterns
 
+- [Signed Webhooks using WebAssembly Component Model](./signed-webhooks/)
 - [Command and Query Responsibility Segregation (CQRS) in Go](./cqrs-go/)
 - [Command and Query Responsibility Segregation (CQRS) in Rust](./cqrs-rust/)
 - [CRUD API with persistence in PostgreSQL](./http-crud-js-pg/)
