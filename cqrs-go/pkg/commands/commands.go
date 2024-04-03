@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 )
 
-const dbName string = "cqrs"
+const dbName string = "default"
 
 // Request model for creating new products
 type CreateProductModel struct {
@@ -92,11 +92,4 @@ func DeleteProduct(id string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
-}
-
-func EnsureDatabase() error {
-	con := sqlite.Open(dbName)
-	defer con.Close()
-	_, err := con.Exec("CREATE TABLE IF NOT EXISTS PRODUCTS (ID VARCHAR(36) PRIMARY KEY, NAME TEXT NOT NULL, DESCRIPTION TEXT NOT NULL)")
-	return err
 }

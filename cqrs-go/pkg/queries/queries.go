@@ -4,7 +4,11 @@ import (
 	"github.com/fermyon/spin/sdk/go/v2/sqlite"
 )
 
-const dbName string = "cqrs"
+const (
+	dbName           = "default"
+	queryAllProducts = "SELECT ID, NAME FROM PRODUCTS ORDER BY NAME ASC"
+	queryProductById = "SELECT ID, NAME, DESCRIPTION FROM PRODUCTS WHERE ID = ?"
+)
 
 // Response model used for a particular product, queried as part of a list
 type ProductListModel struct {
@@ -18,11 +22,6 @@ type ProductDetailsModel struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
-
-const (
-	queryAllProducts = "SELECT ID, NAME FROM PRODUCTS ORDER BY NAME ASC"
-	queryProductById = "SELECT ID, NAME, DESCRIPTION FROM PRODUCTS WHERE ID = ?"
-)
 
 // Query to retrieve all products as a list
 func AllProducts() ([]*ProductListModel, error) {

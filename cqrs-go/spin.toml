@@ -13,7 +13,7 @@ component = "cqrs-go"
 [component.cqrs-go]
 source = "main.wasm"
 allowed_outbound_hosts = []
-sqlite_databases = ["cqrs"]
+sqlite_databases = ["default"]
 
 [component.cqrs-go.build]
 command = "tinygo build -target=wasi -gc=leaking -no-debug -o main.wasm main.go"
