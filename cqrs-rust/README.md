@@ -17,7 +17,6 @@ On the Command side, operations are focused on enforcing business rules, validat
 #### Commands 
 - `POST /items` - To create a new item
 - `PUT /items/:id` - To update an existing item using its identifier
-- `DELETE /items` - To delete multiple items providing an array of identifiers as payload (`{ "ids": []}`)
 - `DELETE /items/:id` - To delete an existing item using its identifier
 
 Send data to `POST /items` and `PUT /items/:id` using the following structure:
