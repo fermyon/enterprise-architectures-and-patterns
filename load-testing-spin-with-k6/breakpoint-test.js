@@ -2,8 +2,6 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 import { check, fail } from 'k6';
 
-
-
 export const options = {
     executor: 'ramping-arrival-rate',
     stages: [
@@ -16,6 +14,7 @@ let url = "http://localhost:3000";
 if (json != "1") {
     url = `${url}/plain`;
 }
+
 export default () => {
 
     console.log(`Requesting ${url}`);

@@ -106,10 +106,6 @@ fn update_item_by_id(req: Request, params: Params) -> anyhow::Result<impl IntoRe
     };
     let key = CacheKey::from((id, Item::get_cache_type()));
     // 1. invalidated the cache
-
-    // todo: what would one do if this failes?
-    // canceling seems a bit hard | ignoring is bad as well
-
     let _ = invalidate_cache(&key);
     let _ = invalidate_cache(&Item::get_cache_key_for_all());
     // Although invalidation of the cache could be achieved by simply setting

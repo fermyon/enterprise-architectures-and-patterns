@@ -8,7 +8,7 @@ CORS, or Cross-Origin Resource Sharing, is a security mechanism implemented by w
 
 To enable cross-origin requests, you need to configure their servers to include specific HTTP headers in their responses. These headers, such as `Access-Control-Allow-Origin`, indicate which domains are allowed to access the API's resources. By setting appropriate CORS headers, you can define the level of access permitted, whether it's open to all origins (`*`) or limited to specific domains. Additionally, you should be aware that preflight requests may be sent by the browser for certain types of requests, such as those with custom headers or methods, and they need to handle these preflight requests appropriately to ensure seamless communication between client-side scripts and the API.
 
-## Supported Plattforms
+## Supported Platforms
 
 - Local (`spin up`)
 - Fermyon Cloud

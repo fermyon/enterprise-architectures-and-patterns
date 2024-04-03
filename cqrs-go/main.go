@@ -17,7 +17,7 @@ func init() {
 	spinhttp.Handle(func(w http.ResponseWriter, r *http.Request) {
 		// todo: refactor this to use migration.sql when running locally or in cloud
 		// for SpinKube and Fermyon Platform for Kubernetes the corresponding
-		// database needs to be preconfigured upon deployment
+		// database needs to be pre-configured upon deployment
 		err := commands.EnsureDatabase()
 		if err != nil {
 			fmt.Println(err)
@@ -50,7 +50,7 @@ func queryAllProducts(w http.ResponseWriter, r *http.Request, _ spinhttp.Params)
 	w.Header().Add("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(products)
 	if err != nil {
-		// remove headers added before
+		// remove the Content-Type header (because no body is sent for 500)
 		w.Header().Del("Content-Type")
 		w.WriteHeader(500)
 		return
@@ -79,7 +79,7 @@ func queryProductById(w http.ResponseWriter, r *http.Request, params spinhttp.Pa
 	w.Header().Add("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(product)
 	if err != nil {
-		// remove headers added before
+		// remove the Content-Type header (because no body is sent for 500)
 		w.Header().Del("Content-Type")
 		w.WriteHeader(500)
 		return
@@ -105,8 +105,9 @@ func createProduct(w http.ResponseWriter, r *http.Request, _ spinhttp.Params) {
 	w.Header().Add("Location", loc)
 	err = json.NewEncoder(w).Encode(p)
 	if err != nil {
-		// remove headers added before
+		// remove the Content-Type header (because no body is sent for 500)
 		w.Header().Del("Content-Type")
+		// remove the Location header
 		w.Header().Del("Location")
 		w.WriteHeader(500)
 		return
@@ -126,18 +127,18 @@ func updateProduct(w http.ResponseWriter, r *http.Request, params spinhttp.Param
 		return
 	}
 
-	prorduct, err := commands.UpdateProduct(id, model)
+	product, err := commands.UpdateProduct(id, model)
 	if err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	// if err and product are nil, we were not able to find the product
-	if prorduct == nil {
+	if product == nil {
 		w.WriteHeader(404)
 		return
 	}
 	w.WriteHeader(200)
-	err = json.NewEncoder(w).Encode(prorduct)
+	err = json.NewEncoder(w).Encode(product)
 	if err != nil {
 		w.WriteHeader(500)
 		return

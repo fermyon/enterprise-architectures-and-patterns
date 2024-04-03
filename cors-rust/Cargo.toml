@@ -1,6 +1,6 @@
 [package]
 name = "cors-rust"
-authors = ["Thorsten Hans <thorsten.hans@fermyon.com>"]
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
 description = ""
 version = "0.1.0"
 edition = "2021"

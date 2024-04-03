@@ -21,7 +21,7 @@ fn handle_content_negotiation_rust(req: Request) -> anyhow::Result<impl IntoResp
 fn handle_info(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
     Ok(Response::builder()
         .status(200)
-        .header("Conent-Type", "text/plain")
+        .header("Content-Type", "text/plain")
         .body(
             r#"Please issue any of the following requests
 

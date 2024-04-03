@@ -16,14 +16,15 @@ fn handle_api(req: Request) -> anyhow::Result<impl IntoResponse> {
     router.get("/items", get_items);
     router.post("/items", post_item);
     router.delete("/items/:id", delete_item);
+
     println!("Handing {:?} {:?}", req.method(), req.uri());
     Ok(router.handle(req))
 }
 
 fn get_items(_req: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
-    let c = Connection::open_default()?;
+    let connection = Connection::open_default()?;
     let values = [];
-    let result = c.execute("SELECT ID, NAME FROM ITEMS", values.as_slice())?;
+    let result = connection.execute("SELECT ID, NAME FROM ITEMS", values.as_slice())?;
     let items: Vec<_> = result
         .rows()
         .map(|row| {
@@ -46,10 +47,9 @@ fn post_item(req: Request, _params: Params) -> anyhow::Result<impl IntoResponse>
     let Ok(payload) = serde_json::from_slice::<Item>(req.body()) else {
         return Ok(Response::new(500, "invalid payload received"));
     };
-    let c = Connection::open_default()?;
-
+    let connection = Connection::open_default()?;
     let values = [Value::Text(payload.name.clone())];
-    c.execute("INSERT INTO ITEMS (NAME) VALUES (?)", values.as_slice())?;
+    connection.execute("INSERT INTO ITEMS (NAME) VALUES (?)", values.as_slice())?;
 
     Ok(Response::builder().status(200).with_cors().body(()).build())
 }

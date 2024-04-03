@@ -86,6 +86,7 @@ const deleteItemById = (id) => {
         body: null
     };
 };
+
 const deleteManyItems = (requestBody) => {
     let payload = JSON.parse(decoder.decode(requestBody));
     if (!Array.isArray(payload) ||
@@ -109,8 +110,8 @@ const deleteManyItems = (requestBody) => {
     return {
         status: 204
     };
-
 };
+
 const createItem = (baseUrl, requestBody) => {
     let payload = JSON.parse(decoder.decode(requestBody));
 

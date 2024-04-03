@@ -3,8 +3,6 @@ use spin_sdk::sqlite::{Connection, Value};
 
 use crate::model::Item;
 
-
-
 pub(crate) fn get_all_from_database() -> anyhow::Result<Vec<Item>> {
     let con = Connection::open_default()?;
     let query_result = con.execute("SELECT ID, NAME FROM ITEMS", &[])?;
