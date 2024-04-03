@@ -8,7 +8,7 @@ router.get("/items", loadConfig, ({ config }) => getAllItems(config));
 router.get("/items/:id", loadConfig, ({ params, config }) => getItemById(config, params.id));
 router.post("/items", loadConfig, ({ config }, requestBody, { baseUrl }) => createItem(config, baseUrl, requestBody));
 router.put("/items/:id", loadConfig, ({ config, params }, requestBody, { baseUrl }) => updateItemById(config, baseUrl, params.id, requestBody));
-router.delete("/items/batch", loadConfig, ({ config }, payload) => deleteManyItems(config, payload));
+router.delete("/items", loadConfig, ({ config }, payload) => deleteManyItems(config, payload));
 router.delete("/items/:id", loadConfig, ({ params, config }) => deleteItemById(config, params.id));
 router.all("*", () => notFound("Endpoint not found"));
 

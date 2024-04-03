@@ -8,7 +8,7 @@ The sample is using PostgreSQL for persistence and provides the following API en
 - `GET /items/:id` - To retrieve a item using its identifier
 - `POST /items` - To create a new item
 - `PUT /items/:id` - To update an existing item using its identifier
-- `DELETE /items/batch` - To delete multiple items providing an array of identifiers as payload
+- `DELETE /items` - To delete multiple items providing an array of identifiers as payload (`{ "ids": []}`)
 - `DELETE /items/:id` - To delete an existing item using its identifier
 
 Send data to `POST /items` and `PUT /items/:id` using the following structure:
@@ -21,6 +21,12 @@ Send data to `POST /items` and `PUT /items/:id` using the following structure:
 }
 ```
 
+## Supported Platforms
+
+- Local (`spin up`)
+- SpinKube
+- Fermyon Platform for Kubernetes
+- 
 ## Prerequisites
 
 To run the sample on your local machine, you must have the following software installed:
@@ -29,7 +35,10 @@ To run the sample on your local machine, you must have the following software in
  - [Docker](https://docker.com)
  - [Node.js](https://nodejs.org)
 
-## Running this sample locally
+
+## Running the Sample
+
+### Local (`spin up`)
 
 To run this sample locally, you can either follow the steps mentioned below or use the corresponding targets specified in the `Makefile`.
 

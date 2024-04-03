@@ -3,12 +3,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 const decoder = new TextDecoder();
 
-const COMMAND_CREATE_ITEM = "INSERT INTO VehicleFeatures (Id, Name, Active) VALUES ($1, $2, $3)";
-const COMMAND_READ_ALL_ITEMS = "SELECT Id, Name, Active FROM VehicleFeatures ORDER BY Name";
-const COMMAND_READ_SINGLE_ITEM = "SELECT Id, Name, Active FROM VehicleFeatures WHERE Id = $1";
-const COMMAND_DELETE_SINGLE_ITEM = "DELETE FROM VehicleFeatures WHERE Id = $1";
-const COMMAND_DELETE_MANY_ITEMS = "DELETE FROM VehicleFeatures WHERE Id IN";
-const COMMAND_UPDATE_SINGLE_ITEM = "UPDATE VehicleFeatures SET Name = $1, Active = $2 WHERE Id = $3";
+const COMMAND_CREATE_ITEM = "INSERT INTO Items (Id, Name, Active) VALUES ($1, $2, $3)";
+const COMMAND_READ_ALL_ITEMS = "SELECT Id, Name, Active FROM Items ORDER BY Name";
+const COMMAND_READ_SINGLE_ITEM = "SELECT Id, Name, Active FROM Items WHERE Id = $1";
+const COMMAND_DELETE_SINGLE_ITEM = "DELETE FROM Items WHERE Id = $1";
+const COMMAND_DELETE_MANY_ITEMS = "DELETE FROM Items WHERE Id IN";
+const COMMAND_UPDATE_SINGLE_ITEM = "UPDATE Items SET Name = $1, Active = $2 WHERE Id = $3";
 
 const DEFAULT_HEADERS = {
     "Content-Type": "application/json"
@@ -67,7 +67,7 @@ const getItemById = (config, id) => {
     return {
         status: 200,
         headers: DEFAULT_HEADERS,
-        body: found
+        body: JSON.stringify(found)
     };
 };
 
@@ -85,20 +85,20 @@ const deleteItemById = (config, id) => {
 
 const deleteManyItems = (config, requestBody) => {
     let payload = JSON.parse(decoder.decode(requestBody));
-    if (!Array.isArray(payload) ||
-        payload.length == 0 ||
-        !payload.every(id => uuidValidate(id))) {
+    if (!Array.isArray(payload.ids) ||
+        payload.ids.length == 0 ||
+        !payload.ids.every(id => uuidValidate(id))) {
         return badRequest("Invalid payload received. Expecting an array with valid uuids");
     }
 
     let cmd = `${COMMAND_DELETE_MANY_ITEMS} (`;
     let parameters = [];
-    for (let i = 0; i < payload.length; i++) {
+    for (let i = 0; i < payload.ids.length; i++) {
         cmd = `${cmd}\$${i + 1}`;
-        if (i < payload.length - 1) {
+        if (i < payload.ids.length - 1) {
             cmd = `${cmd},`;
         }
-        parameters.push(payload[i]);
+        parameters.push(payload.ids[i]);
     }
     cmd = `${cmd})`;
 
@@ -148,10 +148,16 @@ const updateItemById = (config, baseUrl, id, requestBody) => {
         return badRequest("Invalid identifier received via URL");
     }
 
+    const item = {
+        id: id,
+        name: payload.name,
+        active: payload.active
+    }
+
     Pg.execute(config.dbConnectionString, COMMAND_UPDATE_SINGLE_ITEM, [
-        payload.name,
-        payload.active,
-        id
+        item.name,
+        item.active,
+        item.id
     ]);
 
     let customHeaders = {
@@ -162,7 +168,7 @@ const updateItemById = (config, baseUrl, id, requestBody) => {
     return {
         status: 200,
         headers: customHeaders,
-        body: null
+        body: JSON.stringify(item)
     };
 };
 

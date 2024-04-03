@@ -12,17 +12,17 @@ db_connection_string = { required = true }
 
 [[trigger.http]]
 route = "/..."
-component = "http-crud-js"
+component = "crud-api"
 
-[component.http-crud-js]
+[component.crud-api]
 source = "target/http-crud-js.wasm"
 exclude_files = ["**/node_modules"]
 allowed_outbound_hosts = ["postgres://localhost"]
 # foo
 
-[component.http-crud-js.variables]
+[component.crud-api.variables]
 db_connection_string = "{{ db_connection_string }}"
 
-[component.http-crud-js.build]
+[component.crud-api.build]
 command = "npm run build"
 watch = ["src/**/*.js", "package.json"]
