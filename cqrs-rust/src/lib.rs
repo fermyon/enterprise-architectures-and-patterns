@@ -9,27 +9,19 @@ use spin_sdk::http_component;
 
 #[http_component]
 fn handle_cqrs(req: Request) -> anyhow::Result<impl IntoResponse> {
-    // todo: refactor this to use migration.sql when running locally or in cloud
-    // for SpinKube and Fermyon Platform for Kubernetes the corresponding
-    // database needs to be pre-configured upon deployment
-    ensure_database()?;
     let mut router = Router::default();
 
     // register routes for queries
-    router.get("/products", query_all_products);
-    router.get("/products/:id", query_product_by_id);
+    router.get("/items", query_all_products);
+    router.get("/items/:id", query_product_by_id);
 
     // register routes for commands
-    router.post("/products", create_product);
-    router.put("/products/:id", update_product_by_id);
-    router.delete("/products/:id", delete_product_by_id);
+    router.post("/items", create_product);
+    router.put("/items/:id", update_product_by_id);
+    router.delete("/items/:id", delete_product_by_id);
 
     // handle all the requests
     Ok(router.handle(req))
-}
-
-fn ensure_database() -> anyhow::Result<()> {
-    Commands::ensure_database()
 }
 
 fn query_all_products(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {

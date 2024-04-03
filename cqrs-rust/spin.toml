@@ -13,7 +13,7 @@ component = "cqrs-rust"
 [component.cqrs-rust]
 source = "target/wasm32-wasi/release/cqrs_rust.wasm"
 allowed_outbound_hosts = []
-sqlite_databases = ["cqrs"]
+sqlite_databases = ["default"]
 
 [component.cqrs-rust.build]
 command = "cargo build --target wasm32-wasi --release"

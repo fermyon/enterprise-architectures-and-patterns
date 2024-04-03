@@ -11,7 +11,7 @@ pub use crate::models::{
 use spin_sdk::sqlite::{Connection, Value};
 use uuid::Uuid;
 
-const DB_NAME: &str = "cqrs";
+const DB_NAME: &str = "default";
 const COMMAND_CREATE_PRODUCT: &str = "INSERT INTO PRODUCTS (ID, NAME, DESCRIPTION) VALUES (?,?,?)";
 const COMMAND_UPDATE_PRODUCT: &str =
     "UPDATE PRODUCTS SET NAME = ?, DESCRIPTION = ? WHERE ID = ? RETURNING ID";
@@ -68,15 +68,5 @@ impl Commands {
         let query_result = con.execute(COMMAND_DELETE_PRODUCT, &params)?;
         let count = query_result.rows().into_iter().count();
         Ok(count > 0)
-    }
-
-    /// ensure database exists
-    pub fn ensure_database() -> anyhow::Result<()> {
-        let con = Connection::open(DB_NAME)?;
-        con.execute(
-            "CREATE TABLE IF NOT EXISTS PRODUCTS ( ID VARCHAR(36) PRIMARY KEY, NAME TEXT NOT NULL, DESCRIPTION TEXT NOT NULL)",
-            &[],
-        )?;
-        Ok(())
     }
 }

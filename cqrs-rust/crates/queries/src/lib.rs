@@ -9,7 +9,7 @@ use spin_sdk::sqlite::{Connection, Value};
 mod models;
 pub use crate::models::{ProductDetailsModel, ProductListModel};
 
-const DB_NAME: &str = "cqrs";
+const DB_NAME: &str = "default";
 const QUERY_ALL_COMMAND: &str = "SELECT ID, NAME FROM PRODUCTS ORDER BY NAME ASC";
 const QUERY_SINGLE_COMMAND: &str = "SELECT ID, NAME, DESCRIPTION FROM PRODUCTS WHERE ID = ?";
 
