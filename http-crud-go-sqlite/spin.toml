@@ -1,0 +1,20 @@
+spin_manifest_version = 2
+
+[application]
+name = "http-crud-go-sqlite"
+version = "0.1.0"
+authors = ["Thorsten Hans <thorsten.hans@fermyon.com>"]
+description = ""
+
+[[trigger.http]]
+route = "/..."
+component = "http-crud-go-sqlite"
+
+[component.http-crud-go-sqlite]
+source = "main.wasm"
+sqlite_databases = ["default"]
+allowed_outbound_hosts = []
+
+[component.http-crud-go-sqlite.build]
+command = "tinygo build -target=wasi -gc=leaking -no-debug -o main.wasm main.go"
+watch = ["**/*.go", "go.mod"]
