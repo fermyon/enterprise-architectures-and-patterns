@@ -3,29 +3,29 @@ import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 const decoder = new TextDecoder();
 
-const DB_NAME = "crud";
-const COMMAND_CREATE_ITEM = "INSERT INTO VehicleFeatures (Id, Name, Active) VALUES ($1, $2, $3)";
-const COMMAND_READ_ALL_ITEMS = "SELECT Id, Name, Active FROM VehicleFeatures ORDER BY Name";
-const COMMAND_READ_SINGLE_ITEM = "SELECT Id, Name, Active FROM VehicleFeatures WHERE Id = $1";
-const COMMAND_DELETE_SINGLE_ITEM = "DELETE FROM VehicleFeatures WHERE Id = $1";
-const COMMAND_DELETE_MANY_ITEMS = "DELETE FROM VehicleFeatures WHERE Id IN";
-const COMMAND_UPDATE_SINGLE_ITEM = "UPDATE VehicleFeatures SET Name = $1, Active = $2 WHERE Id = $3";
+const DB_NAME = "default";
+const COMMAND_CREATE_ITEM = "INSERT INTO ITEMS (ID, NAME, ACTIVE) VALUES ($1, $2, $3)";
+const COMMAND_READ_ALL_ITEMS = "SELECT ID, NAME, ACTIVE FROM ITEMS ORDER BY NAME";
+const COMMAND_READ_SINGLE_ITEM = "SELECT ID, NAME, ACTIVE FROM ITEMS WHERE ID = $1";
+const COMMAND_DELETE_SINGLE_ITEM = "DELETE FROM ITEMS WHERE ID = $1";
+const COMMAND_DELETE_MANY_ITEMS = "DELETE FROM ITEMS WHERE ID IN";
+const COMMAND_UPDATE_SINGLE_ITEM = "UPDATE ITEMS SET NAME = $1, ACTIVE = $2 WHERE ID = $3";
 
 const DEFAULT_HEADERS = {
     "Content-Type": "application/json"
 };
 
 const getAllItems = () => {
+
     const db = Sqlite.open(DB_NAME);
     const queryResult = db.execute(COMMAND_READ_ALL_ITEMS, []);
     let items = queryResult.rows.map(row => {
         return {
-            id: row[0],
-            name: row[1],
-            active: row[2]
+            id: row["ID"],
+            name: row["NAME"],
+            active: row["ACTIVE"] == 1
         }
     });
-
     return {
         status: 200,
         headers: DEFAULT_HEADERS,
@@ -62,15 +62,16 @@ const getItemById = (id) => {
     if (queryResult.rows.length == 0) {
         return notFound(`No item found with id ${id}`);
     }
+    let first = queryResult.rows[0];
     let found = {
-        id: queryResult.rows[0][0],
-        name: queryResult.rows[0][1],
-        active: queryResult.rows[0][2]
+        id: first["ID"],
+        name: first["NAME"],
+        active: first["ACTIVE"] == 1
     }
     return {
         status: 200,
         headers: DEFAULT_HEADERS,
-        body: found
+        body: JSON.stringify(found)
     };
 };
 
@@ -89,20 +90,20 @@ const deleteItemById = (id) => {
 
 const deleteManyItems = (requestBody) => {
     let payload = JSON.parse(decoder.decode(requestBody));
-    if (!Array.isArray(payload) ||
-        payload.length == 0 ||
-        !payload.every(id => uuidValidate(id))) {
+    if (!Array.isArray(payload.ids) ||
+        payload.ids.length == 0 ||
+        !payload.ids.every(id => uuidValidate(id))) {
         return badRequest("Invalid payload received. Expecting an array with valid uuids");
     }
 
     let cmd = `${COMMAND_DELETE_MANY_ITEMS} (`;
     let parameters = [];
-    for (let i = 0; i < payload.length; i++) {
+    for (let i = 0; i < payload.ids.length; i++) {
         cmd = `${cmd}\$${i + 1}`;
-        if (i < payload.length - 1) {
+        if (i < payload.ids.length - 1) {
             cmd = `${cmd},`;
         }
-        parameters.push(payload[i]);
+        parameters.push(payload.ids[i]);
     }
     cmd = `${cmd})`;
     const db = Sqlite.open(DB_NAME);
@@ -128,7 +129,7 @@ const createItem = (baseUrl, requestBody) => {
     db.execute(COMMAND_CREATE_ITEM, [
         newItem.id,
         newItem.name,
-        newItem.active
+        newItem.active ? 1 : 0
     ]);
 
     let customHeaders = {
@@ -152,10 +153,15 @@ const updateItemById = (baseUrl, id, requestBody) => {
         return badRequest("Invalid identifier received via URL");
     }
     const db = Sqlite.open(DB_NAME);
+    let item = {
+        id: id,
+        name: payload.name,
+        active: payload.active,
+    };
     db.execute(COMMAND_UPDATE_SINGLE_ITEM, [
-        payload.name,
-        payload.active,
-        id
+        item.name,
+        item.active ? 1 : 0,
+        item.id
     ]);
 
     let customHeaders = {
@@ -166,7 +172,7 @@ const updateItemById = (baseUrl, id, requestBody) => {
     return {
         status: 200,
         headers: customHeaders,
-        body: null
+        body: JSON.stringify(item)
     };
 };
 

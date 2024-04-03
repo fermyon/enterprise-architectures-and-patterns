@@ -9,14 +9,14 @@ version = "0.1.0"
 
 [[trigger.http]]
 route = "/..."
-component = "http-crud-js-sqlite"
+component = "crud-api"
 
-[component.http-crud-js-sqlite]
+[component.crud-api]
 source = "target/http-crud-js-sqlite.wasm"
 exclude_files = ["**/node_modules"]
+sqlite_databases = ["default"]
 allowed_outbound_hosts = []
-sqlite_databases = ["crud"]
 
-[component.http-crud-js-sqlite.build]
+[component.crud-api.build]
 command = "npm run build"
 watch = ["src/**/*.js", "package.json"]
