@@ -10,11 +10,11 @@ On the Command side, operations are focused on enforcing business rules, validat
 
 ### Exposed Endpoints 
 
-### Queries 
+#### Queries 
 - `GET /items` - To retrieve a list of all items
 - `GET /items/:id` - To retrieve a item using its identifier
   
-### Commands 
+#### Commands 
 - `POST /items` - To create a new item
 - `PUT /items/:id` - To update an existing item using its identifier
 - `DELETE /items` - To delete multiple items providing an array of identifiers as payload (`{ "ids": []}`)
