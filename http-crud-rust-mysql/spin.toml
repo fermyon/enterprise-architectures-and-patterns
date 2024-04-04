@@ -1,0 +1,22 @@
+spin_manifest_version = 2
+
+[application]
+name = "http-crud-rust-mysql"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+
+[[trigger.http]]
+route = "/..."
+component = "http-crud-rust-mysql"
+
+[component.http-crud-rust-mysql]
+source = "target/wasm32-wasi/release/http_crud_rust_mysql.wasm"
+allowed_outbound_hosts = ["mysql://localhost"]
+
+[component.http-crud-rust-mysql.variables]
+db_connection_string = "mysql://spin:spin@localhost:3306/spin"
+
+[component.http-crud-rust-mysql.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]
