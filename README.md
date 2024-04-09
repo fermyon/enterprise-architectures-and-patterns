@@ -14,6 +14,7 @@ Each folder contains a self-contained example, including some high-level explana
 - [Go CRUD API with persistence in SQLite](./http-crud-go-sqlite/)
 - [Rust CRUD API with persistence in MySQL](./http-crud-rust-mysql/)
 - [Polyglot Publish-Subscribe](./pub-sub-polyglot/)
+- [Long Running Jobs over HTTP](./long-running-jobs-over-http/)
 - [Content Negotiation](./content-negotiation-rust/)
 - [Transparent Caching](./caching-rust/)
 - [Cross-Origin Resource Sharing (CORS)](./cors-rust/)
