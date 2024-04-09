@@ -1,0 +1,3 @@
+[sqlite_database.default]
+type = "spin"
+path = "../data/jobs.db"

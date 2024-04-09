@@ -1,0 +1,39 @@
+spin_manifest_version = 2
+[application]
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+name = "test2"
+version = "0.1.0"
+
+[variables]
+mqtt_address = { default = "mqtt://localhost:1883" }
+mqtt_client_id = { default = "worker" }
+mqtt_username = { default = "" }
+mqtt_password = { default = "" }
+mqtt_keep_alive = { default = "30" }
+
+[application.trigger.mqtt]
+address = "{{ mqtt_address }}?client_id={{ mqtt_client_id }}"
+username = "{{ mqtt_username }}"
+password = "{{ mqtt_password }}"
+keep_alive_interval = "30"
+
+[[trigger.mqtt]]
+topic = "jobs/new"
+qos = "2"
+component = "worker"
+
+[component.worker]
+source = "target/wasm32-wasi/release/worker.wasm"
+allowed_outbound_hosts = ["mqtt://localhost:1883"]
+sqlite_databases = ["default"]
+
+[component.worker.variables]
+mqtt_address = "{{ mqtt_address }}"
+mqtt_username = "{{ mqtt_username }}"
+mqtt_password = "{{ mqtt_password }}"
+mqtt_keep_alive = "{{ mqtt_keep_alive }}"
+
+[component.worker.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]

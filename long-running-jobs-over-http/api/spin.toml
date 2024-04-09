@@ -1,0 +1,35 @@
+spin_manifest_version = 2
+
+[application]
+name = "long-running-jobs-over-http"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+
+[variables]
+mqtt_address = { default = "mqtt://localhost:1883" }
+mqtt_client_id = { default = "api" }
+mqtt_username = { default = "" }
+mqtt_password = { default = "" }
+mqtt_keep_alive = { default = "30" }
+
+[[trigger.http]]
+route = "/..."
+component = "api"
+
+[component.api]
+source = "target/wasm32-wasi/release/api.wasm"
+allowed_outbound_hosts = ["mqtt://localhost:1883"]
+sqlite_databases = ["default"]
+
+[component.api.variables]
+mqtt_address = "{{ mqtt_address }}"
+mqtt_client_id = "{{ mqtt_client_id }}"
+mqtt_username = "{{ mqtt_username }}"
+mqtt_password = "{{ mqtt_password }}"
+mqtt_keep_alive = "{{ mqtt_keep_alive }}"
+topic_name = "jobs/new"
+
+[component.api.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]

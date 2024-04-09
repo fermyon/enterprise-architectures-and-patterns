@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS Jobs (
+    Id VARCHAR(36) PRIMARY KEY,
+    Input TEXT NOT NULL,
+    Result TEXT NULL,
+    Status INTEGER NOT NULL
+);
