@@ -2,7 +2,7 @@ use spin_sdk::http::{responses::not_found, HeaderValue, IntoResponse, Params, Re
 
 use crate::{
     models::CreateJobModel,
-    service::{create_job, read_job_status},
+    service::{create_job, read_job_status, read_job_status_all},
 };
 
 pub fn start_job(req: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
@@ -35,6 +35,15 @@ pub fn get_job_status(_: Request, params: Params) -> anyhow::Result<impl IntoRes
             .build()),
         None => Ok(not_found()),
     }
+}
+
+pub fn get_status_of_all_jobs(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
+    let status = read_job_status_all()?;
+    Ok(Response::builder()
+        .status(200)
+        .header("Content-Type", "application/json")
+        .body(status)
+        .build())
 }
 
 fn build_location_header_value(url_header: Option<&HeaderValue>, id: &str) -> String {

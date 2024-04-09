@@ -11,7 +11,8 @@ mod service;
 fn handle_api(req: Request) -> anyhow::Result<impl IntoResponse> {
     let router = http_router!(
         POST "/jobs" => handlers::start_job,
-        GET  "/jobs/:id" => handlers::get_job_status
+        GET  "/jobs/:id" => handlers::get_job_status,
+        GET "/jobs" => handlers::get_status_of_all_jobs
     );
 
     Ok(router.handle(req))

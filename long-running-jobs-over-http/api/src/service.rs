@@ -6,12 +6,12 @@ use spin_sdk::{
 
 use crate::{
     config::Config,
-    models::{CreateJobModel, JobStatusModel},
+    models::{CreateJobModel, JobStatusList, JobStatusModel},
 };
 
 const SQL_INSERT_JOB: &str = "INSERT INTO Jobs (Id, Input, Status) VALUES (?,?,?)";
 const SQL_READ_JOB_STATUS: &str = "SELECT Id, Result, Status FROM Jobs WHERE Id=?";
-
+const SQL_READ_ALL_JOBS_STATUS: &str = "SELECT Id, Result, Status FROM Jobs";
 pub fn create_job(model: CreateJobModel) -> anyhow::Result<JobStatusModel> {
     let config = Config::load()?;
 
@@ -55,4 +55,16 @@ pub fn read_job_status(id: String) -> anyhow::Result<Option<JobStatusModel>> {
         .map(|row| JobStatusModel::from(row))
         .collect();
     Ok(status.into_iter().next())
+}
+
+pub fn read_job_status_all() -> anyhow::Result<JobStatusList> {
+    let con = sqlite::Connection::open_default()?;
+    let params = [];
+    let row_set = con.execute(SQL_READ_ALL_JOBS_STATUS, &params)?;
+    let list: JobStatusList = row_set
+        .rows()
+        .map(|row| JobStatusModel::from(row))
+        .collect::<Vec<JobStatusModel>>()
+        .into();
+    Ok(list)
 }

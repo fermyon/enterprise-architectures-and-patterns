@@ -49,3 +49,19 @@ impl IntoBody for JobStatusModel {
         serde_json::to_vec(&self).unwrap()
     }
 }
+
+pub(crate) struct JobStatusList {
+    status: Vec<JobStatusModel>,
+}
+
+impl From<Vec<JobStatusModel>> for JobStatusList {
+    fn from(value: Vec<JobStatusModel>) -> Self {
+        Self { status: value }
+    }
+}
+
+impl IntoBody for JobStatusList {
+    fn into_body(self) -> Vec<u8> {
+        serde_json::to_vec(&self.status).unwrap()
+    }
+}

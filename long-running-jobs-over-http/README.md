@@ -15,6 +15,7 @@ The API and both workers track the state of the jobs using a SQLite database (lo
 The API exposes the following endpoints:
 
 - `GET /jobs/:id` -> To query the status of a particular job using its identifier
+- `GET /jobs` -> To retrieve the list of all jobs
 - `POST /jobs` -> To start a new job providing the request payload scheme shown below
 
 ```json
