@@ -1,0 +1,47 @@
+spin_manifest_version = 2
+
+[application]
+name = "aggregation-pattern"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = "Sample implementation of the Aggregation Pattern"
+
+[[trigger.http]]
+route = "/aggregates/..."
+component = "aggregates-service"
+
+[component.aggregates-service]
+source = "aggregates-service/target/wasm32-wasi/release/aggregates_service.wasm"
+allowed_outbound_hosts = [
+    "http://customers-service.spin.internal",
+    "http://incidents-service.spin.internal",
+]
+
+[component.aggregates-service.build]
+command = "cargo build --target wasm32-wasi --release"
+workdir = "aggregates-service"
+watch = ["src/**/*.rs", "Cargo.toml"]
+
+[[trigger.http]]
+route = "/customers/..."
+component = "customers-service"
+
+[component.customers-service]
+source = "customers-service/target/customers-service.wasm"
+sqlite_databases = ["default"]
+[component.customers-service.build]
+command = "npm run build"
+workdir = "customers-service"
+
+[[trigger.http]]
+route = "/incidents/..."
+component = "incidents-service"
+
+[component.incidents-service]
+source = "incidents-service/main.wasm"
+sqlite_databases = ["default"]
+allowed_outbound_hosts = []
+[component.incidents-service.build]
+command = "tinygo build -target=wasi -gc=leaking -no-debug -o main.wasm main.go"
+workdir = "incidents-service"
+watch = ["**/*.go", "go.mod"]
