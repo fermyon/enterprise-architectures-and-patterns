@@ -9,6 +9,7 @@ Each folder contains a self-contained example, including some high-level explana
 - [Signed Webhooks using WebAssembly Component Model](./signed-webhooks/)
 - [Command and Query Responsibility Segregation (CQRS) in Go](./cqrs-go/)
 - [Command and Query Responsibility Segregation (CQRS) in Rust](./cqrs-rust/)
+- [Polyglot Aggregate Pattern implementation](./aggregate-pattern/)
 - [JavaScript CRUD API with persistence in PostgreSQL](./http-crud-js-pg/)
 - [JavaScript CRUD API with persistence in SQLite](./http-crud-js-sqlite/)
 - [Go CRUD API with persistence in SQLite](./http-crud-go-sqlite/)
