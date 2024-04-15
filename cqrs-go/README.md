@@ -21,11 +21,12 @@ On the Command side, operations are focused on enforcing business rules, validat
 
 Send data to `POST /items` and `PUT /items/:id` using the following structure:
 
-```jsonc
+```json
 {
     "name": "item name",
     "description": "Description fo the item"
 }
+```
 
 ## Supported Platforms
 
