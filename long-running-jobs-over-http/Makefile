@@ -14,7 +14,7 @@ start-api:
 .PHONY: start-spin-worker
 start-spin-worker:
 	pushd spin-worker;\
-	spin up --build
+	spin up --runtime-config-file local.toml --build
 	
 
 .PHONY: start-native-worker

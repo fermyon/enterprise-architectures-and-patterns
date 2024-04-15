@@ -67,7 +67,7 @@ Use the following command to start it in a new terminal instance:
 
 ```bash
 # Start spin-worker
-make spin-worker
+make start-spin-worker
 ```
 
 Start the `native-worker` is a native worker implementation in Go. Use the following command to start it in a new terminal instance:
