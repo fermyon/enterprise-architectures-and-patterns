@@ -28,7 +28,7 @@ To use this sample you must have
 You can configure CORS according to your needs in [`spin.toml`](./spin.toml).
 The API exposes the following endpoints
 
-- `OPTIONS *` - Handler for CORS preflight requests
+- `OPTIONS /*` - Handler for CORS preflight requests
 - `GET /items` - Returns a list of items
 - `POST /items` - Create a new item
 - `DELETE /items/:id` - Delete an item using its identifier

@@ -1,18 +1,33 @@
-use crate::cors::handle_preflight;
 use models::Item;
+use spin_contrib_http::cors::{
+    CorsConfig, CorsResponseBuilder, CorsRouter, ALL_HEADERS, ALL_METHODS, NO_ORIGINS,
+};
 use spin_sdk::http::{IntoResponse, Params, Request, Response, Router};
-use spin_sdk::http_component;
 use spin_sdk::sqlite::{Connection, Value};
+use spin_sdk::{http_component, variables};
 
-mod cors;
 mod models;
-use crate::cors::WithCors;
+fn load_cors_config() -> CorsConfig {
+    CorsConfig {
+        allowed_origins: variables::get("cors_allowed_origins").unwrap_or(NO_ORIGINS.into()),
+        allowed_methods: variables::get("cors_allowed_methods").unwrap_or(ALL_METHODS.into()),
+        allowed_headers: variables::get("cors_allowed_headers").unwrap_or(ALL_HEADERS.into()),
+        allow_credentials: variables::get("cors_allow_credentials")
+            .unwrap_or("true".to_string())
+            .parse()
+            .unwrap_or(true),
+        max_age: variables::get("cors_max_age")
+            .ok()
+            .and_then(|v| v.parse::<u32>().ok()),
+    }
+}
 
 #[http_component]
 fn handle_api(req: Request) -> anyhow::Result<impl IntoResponse> {
-    let mut router = Router::default();
+    let cfg = load_cors_config();
 
-    router.options("*", handle_preflight);
+    let mut router = Router::default();
+    router.register_options_handler(cfg);
     router.get("/items", get_items);
     router.post("/items", post_item);
     router.delete("/items/:id", delete_item);
@@ -38,9 +53,8 @@ fn get_items(_req: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
     Ok(Response::builder()
         .status(200)
         .header("Content-Type", "application/json")
-        .with_cors()
         .body(payload)
-        .build())
+        .build_with_cors(load_cors_config()))
 }
 
 fn post_item(req: Request, _params: Params) -> anyhow::Result<impl IntoResponse> {
@@ -51,7 +65,10 @@ fn post_item(req: Request, _params: Params) -> anyhow::Result<impl IntoResponse>
     let values = [Value::Text(payload.name.clone())];
     connection.execute("INSERT INTO ITEMS (NAME) VALUES (?)", values.as_slice())?;
 
-    Ok(Response::builder().status(200).with_cors().body(()).build())
+    Ok(Response::builder()
+        .status(200)
+        .body(())
+        .build_with_cors(load_cors_config()))
 }
 
 fn delete_item(_req: Request, params: Params) -> anyhow::Result<impl IntoResponse> {
@@ -66,5 +83,8 @@ fn delete_item(_req: Request, params: Params) -> anyhow::Result<impl IntoRespons
     let connection = Connection::open_default()?;
     let values = [Value::Integer(id)];
     connection.execute("DELETE FROM ITEMS WHERE ID = ?", values.as_slice())?;
-    Ok(Response::builder().status(200).with_cors().body(()).build())
+    Ok(Response::builder()
+        .status(200)
+        .body(())
+        .build_with_cors(load_cors_config()))
 }
