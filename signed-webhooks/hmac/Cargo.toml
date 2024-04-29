@@ -9,9 +9,11 @@ edition = "2021"
 data-encoding = "2.5.0"
 rand = "0.8.5"
 ring = "0.17.8"
-wit-bindgen = { version = "0.22.0", default-features = false, features = [
+wit-bindgen = { version = "0.24.0", default-features = false, features = [
     "realloc",
 ] }
+
+wit-bindgen-rt = "0.24.0"
 
 [lib]
 crate-type = ["cdylib"]
