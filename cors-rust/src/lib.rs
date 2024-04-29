@@ -8,18 +8,18 @@ use spin_sdk::{http_component, variables};
 
 mod models;
 fn load_cors_config() -> CorsConfig {
-    CorsConfig {
-        allowed_origins: variables::get("cors_allowed_origins").unwrap_or(NO_ORIGINS.into()),
-        allowed_methods: variables::get("cors_allowed_methods").unwrap_or(ALL_METHODS.into()),
-        allowed_headers: variables::get("cors_allowed_headers").unwrap_or(ALL_HEADERS.into()),
-        allow_credentials: variables::get("cors_allow_credentials")
+    CorsConfig::new(
+        variables::get("cors_allowed_origins").unwrap_or(NO_ORIGINS.into()),
+        variables::get("cors_allowed_methods").unwrap_or(ALL_METHODS.into()),
+        variables::get("cors_allowed_headers").unwrap_or(ALL_HEADERS.into()),
+        variables::get("cors_allow_credentials")
             .unwrap_or("true".to_string())
             .parse()
             .unwrap_or(true),
-        max_age: variables::get("cors_max_age")
+        variables::get("cors_max_age")
             .ok()
             .and_then(|v| v.parse::<u32>().ok()),
-    }
+    )
 }
 
 #[http_component]
@@ -36,7 +36,7 @@ fn handle_api(req: Request) -> anyhow::Result<impl IntoResponse> {
     Ok(router.handle(req))
 }
 
-fn get_items(_req: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
+fn get_items(req: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
     let connection = Connection::open_default()?;
     let values = [];
     let result = connection.execute("SELECT ID, NAME FROM ITEMS", values.as_slice())?;
@@ -54,7 +54,7 @@ fn get_items(_req: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
         .status(200)
         .header("Content-Type", "application/json")
         .body(payload)
-        .build_with_cors(load_cors_config()))
+        .build_with_cors(&req, &load_cors_config()))
 }
 
 fn post_item(req: Request, _params: Params) -> anyhow::Result<impl IntoResponse> {
@@ -68,10 +68,10 @@ fn post_item(req: Request, _params: Params) -> anyhow::Result<impl IntoResponse>
     Ok(Response::builder()
         .status(200)
         .body(())
-        .build_with_cors(load_cors_config()))
+        .build_with_cors(&req, &load_cors_config()))
 }
 
-fn delete_item(_req: Request, params: Params) -> anyhow::Result<impl IntoResponse> {
+fn delete_item(req: Request, params: Params) -> anyhow::Result<impl IntoResponse> {
     let Some(id) = params.get("id") else {
         return Ok(Response::new(404, ()));
     };
@@ -86,5 +86,5 @@ fn delete_item(_req: Request, params: Params) -> anyhow::Result<impl IntoRespons
     Ok(Response::builder()
         .status(200)
         .body(())
-        .build_with_cors(load_cors_config()))
+        .build_with_cors(&req, &load_cors_config()))
 }
