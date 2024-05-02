@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_VERSION: 1.74
+  TINYGO_VERSION: v0.31.2
+  NODE_VERSION: 16
+jobs:
+  build-apps:
+    name: Build Spin Apps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v2
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+          targets: wasm32-wasi
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install TinyGo
+        uses: rajatjindal/setup-actions/tinygo@v0.0.1
+        with:
+          version: ${{ env.TINYGO_VERSION }}
+      - name: Install Spin
+        uses: fermyon/actions/spin/setup@v1
+        with:
+          plugins: js2wasm
+      - name: Build Aggregate App
+        run: |
+          cd aggregate-pattern
+          cd customers-service
+          npm install
+          cd ..
+          spin build
+      - name: Build Azure Key Vault Provider App
+        run: |
+          cd application-variable-providers/azure-key-vault-provider
+          spin build
+      - name: Build HashiCorp Vault Provider App
+        run: |
+          cd application-variable-providers/vault-provider
+          spin build
+      - name: Build Caching App
+        run: |
+          cd caching-rust
+          spin build
+      - name: Build Content Negotiation App
+        run: |
+          cd content-negotiation-rust
+          spin build
+      - name: Build CORS App
+        run: |
+          cd cors-rust
+          spin build
+      - name: Build CQRS (Rust) App
+        run: |
+          cd cqrs-rust
+          spin build
+      - name: Build CQRS (Go) App
+        run: |
+          cd cqrs-go
+          spin build
+      - name: Build CRUD (Go) SQLite App
+        run: |
+          cd http-crud-go-sqlite
+          spin build
+      - name: Build CRUD (JS) PostgreSQL App
+        run: |
+          cd http-crud-js-pg
+          npm install
+          spin build
+      - name: Build CRUD (JS) SQLite App
+        run: |
+          cd http-crud-js-sqlite
+          npm install
+          spin build
+      - name: Build CRUD (Rust) MySQL App
+        run: |
+          cd http-crud-rust-mysql
+          spin build
+      - name: Build Long Running Jobs over HTTP App
+        run: |
+          cd long-running-jobs-over-http
+          cd api
+          spin build
+          cd ..
+          cd spin-worker
+          spin build
+      - name: Build Publish-Subscribe App
+        run: |
+          cd pub-sub-polyglot
+          cd http-publisher-js
+          npm install
+          spin build
+          cd ..
+          cd mass-publisher
+          cargo build
+          cd ..
+          cd subscriber-go
+          spin build
+          cd ..
+          cd subscriber-rust
+          spin build
