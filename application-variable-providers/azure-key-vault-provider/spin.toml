@@ -1,0 +1,26 @@
+spin_manifest_version = 2
+
+[application]
+name = "azure-key-vault-provider"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = "Using the Azure Key Vault Application Variable Provider"
+
+[variables]
+secret = { required = true }
+
+
+[[trigger.http]]
+route = "/..."
+component = "azure-key-vault-provider"
+
+[component.azure-key-vault-provider]
+source = "target/wasm32-wasi/release/azure_key_vault_provider.wasm"
+allowed_outbound_hosts = []
+
+[component.azure-key-vault-provider.variables]
+secret = "{{ secret }}"
+
+[component.azure-key-vault-provider.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]

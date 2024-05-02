@@ -20,3 +20,5 @@ Each folder contains a self-contained example, including some high-level explana
 - [Transparent Caching](./caching-rust/)
 - [Cross-Origin Resource Sharing (CORS)](./cors-rust/)
 - [How to load test Spin Apps with Grafana k6](./load-testing-spin-with-k6/)
+- [Using the Vault Application Variable Provider](./application-variable-providers/vault-provider/)
+- [Using the Azure Key Vault Application Variable Provider](./application-variable-providers/azure-key-vault-provider/)

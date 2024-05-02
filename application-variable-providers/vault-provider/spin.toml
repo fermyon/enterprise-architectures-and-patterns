@@ -1,0 +1,25 @@
+spin_manifest_version = 2
+
+[application]
+name = "vault-provider"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = "Vault Application Variable Provider Example"
+
+[[trigger.http]]
+route = "/..."
+component = "vault-provider"
+
+[variables]
+secret = { required = true }
+
+[component.vault-provider]
+source = "target/wasm32-wasi/release/vault_provider.wasm"
+allowed_outbound_hosts = []
+
+[component.vault-provider.variables]
+token = "{{ secret }}"
+
+[component.vault-provider.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]
