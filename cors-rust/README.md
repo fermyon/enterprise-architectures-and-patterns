@@ -55,6 +55,17 @@ Available Routes:
   cors-rust: http://127.0.0.1:3000 (wildcard)
 ```
 
+#### Overriding Allowed CORS Origins 
+
+The Spin Manifest (`spin.toml`) defines a variable to inject allowed CORS origins using different variable providers (e.g., Environment Variables), allowing you to configure those origins without having to re-compile the app. 
+
+See the following command, starting the same app but specifying different allowed CORS origins using the Spin Environment Variable Provider:
+
+```bash
+# Start the App with different allowed CORS origins
+SPIN_VARIABLE_ALLOWED_ORIGINS=http://localhost:4200,http://localhost:5000 spin up --build --sqlite @migrations.sql
+```
+
 ### Fermyon Cloud
 
 You can deploy this sample to Fermyon Cloud following the steps below:

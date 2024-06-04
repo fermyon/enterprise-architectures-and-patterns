@@ -367,9 +367,9 @@ dependencies = [
 
 [[package]]
 name = "spin-contrib-http"
-version = "0.0.5"
+version = "0.0.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "088b705fd850a73b0fef7ea97d9b74950a0d9feaf19bc97da219f5b47757f564"
+checksum = "e0744587bca1d7d5ab85a774a553099dca291d9e1efac7673570a10d434d380a"
 dependencies = [
  "anyhow",
  "http",

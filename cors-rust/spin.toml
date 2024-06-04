@@ -15,8 +15,10 @@ source = "target/wasm32-wasi/release/cors_rust.wasm"
 allowed_outbound_hosts = []
 sqlite_databases = ["default"]
 
+[variables]
+allowed_origins = { default = "http://localhost:4200" }
 [component.cors-rust.variables]
-cors_allowed_origins = "http://localhost:4200"
+cors_allowed_origins = "{{ allowed_origins }}"
 cors_allowed_methods = "*"
 cors_allowed_headers = "*"
 cors_allow_credentials = "true"
