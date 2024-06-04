@@ -1,21 +1,26 @@
 use serde::Serialize;
 
-/// ProductListModel defines the layout of a product when queried as list
 #[derive(Debug, Serialize)]
-pub struct ProductListModel {
-    /// product identifier
+pub struct EmployeeListModel {
     pub id: String,
-    /// name of the product
     pub name: String,
+    pub city: String,
 }
 
-/// ProductDetailsModel defines the layout used for returning a stingle product instance
 #[derive(Debug, Serialize)]
-pub struct ProductDetailsModel {
-    /// product identifier
+pub struct EmployeeDetailsModel {
     pub id: String,
-    /// name of the product
-    pub name: String,
-    /// description of the product
-    pub description: String,
+    #[serde(rename = "firstName")]
+    pub first_name: String,
+    #[serde(rename = "lastName")]
+    pub last_name: String,
+    pub address: AddressDetailsModel,
+}
+
+#[derive(Debug, Serialize)]
+pub struct AddressDetailsModel {
+    pub id: String,
+    pub street: String,
+    pub city: String,
+    pub zip: String,
 }

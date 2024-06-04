@@ -11,20 +11,25 @@ On the Command side, operations are focused on enforcing business rules, validat
 ### Exposed Endpoints 
 
 #### Queries 
-- `GET /items` - To retrieve a list of all items
-- `GET /items/:id` - To retrieve a item using its identifier
+- `GET /employees` - To retrieve a list of all employees
+- `GET /employees/:id` - To retrieve an employee using its identifier
   
 #### Commands 
-- `POST /items` - To create a new item
-- `PUT /items/:id` - To update an existing item using its identifier
-- `DELETE /items/:id` - To delete an existing item using its identifier
+- `POST /employees` - To create a new employee
+- `PUT /employees/:id` - To update an existing employee using its identifier
+- `DELETE /employees/:id` - To delete an existing employee using its identifier
 
 Send data to `POST /items` and `PUT /items/:id` using the following structure:
 
 ```jsonc
 {
-    "name": "item name",
-    "description": "Description fo the item"
+    "firstName": "John",
+    "lastName": "Smith",
+    "address": {
+      "street": "1234 Main Street",
+      "zip": "02112",
+      "city": "Boston"
+    }
 }
 
 ## Supported Platforms

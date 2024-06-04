@@ -5,68 +5,101 @@
 //! This crate contains all commands of the CQRS sample
 
 mod models;
-pub use crate::models::{
-    CreateProductModel, ProductCreatedModel, ProductUpdatedModel, UpdateProductModel,
+pub use models::{
+    AddressCreatedModel, AddressUpdatedModel, CreateEmployeeModel, EmployeeCreatedModel,
+    EmployeeUpdatedModel, UpdateEmployeeModel,
 };
 use spin_sdk::sqlite::{Connection, Value};
 use uuid::Uuid;
 
 const DB_NAME: &str = "default";
-const COMMAND_CREATE_PRODUCT: &str = "INSERT INTO PRODUCTS (ID, NAME, DESCRIPTION) VALUES (?,?,?)";
-const COMMAND_UPDATE_PRODUCT: &str =
-    "UPDATE PRODUCTS SET NAME = ?, DESCRIPTION = ? WHERE ID = ? RETURNING ID";
-const COMMAND_DELETE_PRODUCT: &str = "DELETE FROM PRODUCTS WHERE ID = ? RETURNING ID";
+const COMMAND_CREATE_EMPLOYEE: &str =
+    "INSERT INTO Employees (Id, FirstName, LastName) VALUES (?,?,?);";
+const COMMAND_CREATE_ADDRESS: &str =
+    "INSERT INTO Addresses (EmployeeId, Street, Zip, City) VALUES (?,?,?,?);";
+
+const COMMAND_UPDATE_EMPLOYEE: &str =
+    "UPDATE Employees SET FirstName = ?, LastName = ? WHERE Id = ?; UPDATE Addresses SET Street = ?, Zip = ?, City = ? WHERE EmployeeId =?; RETURNING ID";
+
+const COMMAND_DELETE_EMPLOYEE: &str = "DELETE FROM Employees WHERE Id = ? RETURNING Id";
 
 /// The Queries struct encapsulates available commands
 pub struct Commands {}
 
 impl Commands {
-    /// Command to create a new product and store it in the database
-    pub fn create_product(model: CreateProductModel) -> anyhow::Result<ProductCreatedModel> {
+    /// Command to create a new employee
+    pub fn create_employee(model: CreateEmployeeModel) -> anyhow::Result<EmployeeCreatedModel> {
         let id = Uuid::new_v4();
         let con = Connection::open(DB_NAME)?;
-        let params = [
+        let employee_params = [
             Value::Text(id.to_string()),
-            Value::Text(model.name.clone()),
-            Value::Text(model.description.clone()),
+            Value::Text(model.first_name.clone()),
+            Value::Text(model.last_name.clone()),
         ];
-        let _ = con.execute(COMMAND_CREATE_PRODUCT, &params)?;
-        Ok(ProductCreatedModel {
+        let address_params = [
+            Value::Text(id.to_string()),
+            Value::Text(model.address.street.clone()),
+            Value::Text(model.address.zip.clone()),
+            Value::Text(model.address.city.clone()),
+        ];
+        let _ = con.execute("BEGIN TRANSACTION;", &[]);
+        let _ = con.execute(COMMAND_CREATE_EMPLOYEE, &employee_params)?;
+        let _ = con.execute(COMMAND_CREATE_ADDRESS, &address_params);
+        let _ = con.execute("END TRANSACTION;", &[]);
+        Ok(EmployeeCreatedModel {
             id: id.to_string(),
-            name: model.name,
-            description: model.description,
+            first_name: model.first_name,
+            last_name: model.last_name,
+            address: AddressCreatedModel {
+                id: id.to_string(),
+                street: model.address.street,
+                zip: model.address.zip,
+                city: model.address.city,
+            },
         })
     }
 
     /// Command to update an existing product in the datastore
-    pub fn update_product(
+    pub fn update_employee(
         id: String,
-        model: UpdateProductModel,
-    ) -> anyhow::Result<Option<ProductUpdatedModel>> {
+        model: UpdateEmployeeModel,
+    ) -> anyhow::Result<Option<EmployeeUpdatedModel>> {
         let con = Connection::open(DB_NAME)?;
         let params = [
-            Value::Text(model.name.clone()),
-            Value::Text(model.description.clone()),
+            Value::Text(model.first_name.clone()),
+            Value::Text(model.last_name.clone()),
+            Value::Text(id.clone()),
+            Value::Text(model.address.street.clone()),
+            Value::Text(model.address.zip.clone()),
+            Value::Text(model.address.city.clone()),
             Value::Text(id.clone()),
         ];
-        let query_result = con.execute(COMMAND_UPDATE_PRODUCT, &params)?;
-        let affected = query_result.rows.into_iter().count();
+        let _ = con.execute("BEGIN TRANSACTION;", &[]);
+        let query_result = con.execute(COMMAND_UPDATE_EMPLOYEE, &params)?;
+        let _ = con.execute("END TRANSACTION;", &[]);
+        let affected = query_result.rows.len();
         if affected < 1 {
             return Ok(None);
         }
-        Ok(Some(ProductUpdatedModel {
-            id: id,
-            name: model.name,
-            description: model.description,
+        Ok(Some(EmployeeUpdatedModel {
+            id: id.to_string(),
+            first_name: model.first_name,
+            last_name: model.last_name,
+            address: AddressUpdatedModel {
+                id: id.to_string(),
+                street: model.address.street,
+                zip: model.address.zip,
+                city: model.address.city,
+            },
         }))
     }
 
     /// Command delete a particular product from the datastore using its identifier
-    pub fn delete_product_by_id(id: String) -> anyhow::Result<bool> {
+    pub fn delete_employee_by_id(id: String) -> anyhow::Result<bool> {
         let con = Connection::open(DB_NAME)?;
         let params = [Value::Text(id.clone())];
-        let query_result = con.execute(COMMAND_DELETE_PRODUCT, &params)?;
-        let count = query_result.rows().into_iter().count();
+        let query_result = con.execute(COMMAND_DELETE_EMPLOYEE, &params)?;
+        let count = query_result.rows().count();
         Ok(count > 0)
     }
 }
