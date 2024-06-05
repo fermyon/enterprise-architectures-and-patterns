@@ -21,7 +21,7 @@ On the Command side, operations are focused on enforcing business rules, validat
 
 Send data to `POST /items` and `PUT /items/:id` using the following structure:
 
-```jsonc
+```json
 {
     "firstName": "John",
     "lastName": "Smith",
@@ -31,6 +31,7 @@ Send data to `POST /items` and `PUT /items/:id` using the following structure:
       "city": "Boston"
     }
 }
+```
 
 ## Supported Platforms
 
