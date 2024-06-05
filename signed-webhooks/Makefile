@@ -32,3 +32,10 @@ start-producer:
 start-consumer:
 	pushd webhook-consumer;\
 	spin up --listen 127.0.0.1:3002
+
+.PHONY install-deps:
+install-deps:
+	cargo install cargo-binstall
+	echo "yes" | cargo binstall wasm-tools --force
+	echo "yes" | cargo binstall cargo-component --force
+
