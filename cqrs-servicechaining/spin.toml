@@ -1,0 +1,48 @@
+spin_manifest_version = 2
+
+[application]
+name = "cqrs-servicechaining"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = "A fairly simple CQRS implementation using local service chaining capabilities of Spin"
+
+[[trigger.http]]
+route = "/..."
+component = "gateway"
+
+[component.gateway]
+source = "gateway/target/wasm32-wasi/release/gateway.wasm"
+allowed_outbound_hosts = ["https://*.spin.internal"]
+
+[component.gateway.build]
+command = "cargo build --target wasm32-wasi --release"
+workdir = "gateway"
+watch = ["src/**/*.rs", "Cargo.toml"]
+
+[[trigger.http]]
+route = { private = true }
+component = "queries"
+
+[component.queries]
+source = "queries/main.wasm"
+allowed_outbound_hosts = []
+sqlite_databases = ["default"]
+
+[component.queries.build]
+command = "tinygo build -target=wasi -gc=leaking -no-debug -o main.wasm main.go"
+workdir = "queries"
+watch = ["**/*.go", "go.mod"]
+
+[[trigger.http]]
+route = { private = true }
+component = "commands"
+
+[component.commands]
+source = "commands/target/wasm32-wasi/release/commands.wasm"
+allowed_outbound_hosts = []
+sqlite_databases = ["default"]
+
+[component.commands.build]
+command = "cargo build --target wasm32-wasi --release"
+workdir = "commands"
+watch = ["src/**/*.rs", "Cargo.toml"]

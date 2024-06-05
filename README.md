@@ -19,6 +19,7 @@ If you haven't used Spin before, we highly recommend exploring the [Fermyon Deve
 ### Command and Query Responsibility Segregation (CQRS)
 - [Command and Query Responsibility Segregation (CQRS) in Go](./cqrs-go/)
 - [Command and Query Responsibility Segregation (CQRS) in Rust](./cqrs-rust/)
+- [Command and Query Responsibility Segregation (CQRS) using Spin Service Chaining in Rust and Go](./cqrs-servicechaining/)
 
 ### Patterns for building HTTP APIs
 - [Content Negotiation](./content-negotiation-rust/)
