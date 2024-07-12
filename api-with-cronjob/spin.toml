@@ -3,7 +3,7 @@ spin_manifest_version = 2
 [application]
 name = "api"
 version = "0.1.0"
-authors = ["Thorsten Hans <thorsten.hans@fermyon.com>"]
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
 description = ""
 
 [variables]

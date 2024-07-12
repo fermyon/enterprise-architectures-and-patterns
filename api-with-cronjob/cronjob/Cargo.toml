@@ -1,5 +1,6 @@
 [package]
 name = "cronjob"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
 version = "0.1.0"
 edition = "2021"
 
