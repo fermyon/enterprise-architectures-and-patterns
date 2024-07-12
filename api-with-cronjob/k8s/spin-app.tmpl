@@ -1,0 +1,10 @@
+apiVersion: core.spinoperator.dev/v1alpha1
+kind: SpinApp
+metadata:
+  name: api
+spec:
+  image: ARTIFACT
+  executor: containerd-shim-spin
+  replicas: 1
+  runtimeConfig:
+    loadFromSecret: rtc

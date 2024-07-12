@@ -1,0 +1,25 @@
+spin_manifest_version = 2
+
+[application]
+name = "cronjob"
+version = "0.1.0"
+authors = ["Thorsten Hans <thorsten.hans@fermyon.com>"]
+description = ""
+
+[variables]
+store = { default = "custom" }
+
+[[trigger.command]]
+component = "cronjob"
+
+[component.cronjob]
+source = "cronjob/target/wasm32-wasi/release/cronjob.wasm"
+key_value_stores = ["custom"]
+
+[component.cronjob.variables]
+store = "{{ store }}"
+
+[component.cronjob.build]
+command = "cargo component build --target wasm32-wasi --release"
+workdir = "cronjob"
+watch = ["src/**/*.rs", "Cargo.toml"]

@@ -1,0 +1,27 @@
+spin_manifest_version = 2
+
+[application]
+name = "api"
+version = "0.1.0"
+authors = ["Thorsten Hans <thorsten.hans@fermyon.com>"]
+description = ""
+
+[variables]
+store = { default = "custom" }
+
+[[trigger.http]]
+route = "/..."
+component = "api"
+
+[component.api]
+source = "api/target/wasm32-wasi/release/api.wasm"
+allowed_outbound_hosts = []
+key_value_stores = ["custom"]
+
+[component.api.variables]
+store = "{{ store }}"
+
+[component.api.build]
+command = "cargo build --target wasm32-wasi --release"
+workdir = "api"
+watch = ["src/**/*.rs", "Cargo.toml"]

@@ -1,0 +1,3 @@
+[key_value_store.custom]
+type = "spin"
+path = ".spin/custom_kv_store"

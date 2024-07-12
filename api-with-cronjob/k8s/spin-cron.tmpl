@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spin-cronjob
+spec:
+  schedule: "SCHEDULE"
+  jobTemplate:
+    metadata:
+      name: spin-cronjob
+    spec:
+      template:
+        spec:
+          runtimeClassName: wasmtime-spin-v2
+          containers:
+            - image: ARTIFACT
+              command:
+                - /
+              name: main
+              volumeMounts:
+                - mountPath: /runtime-config.toml
+                  name: spin-runtime-config
+                  readOnly: true
+                  subPath: runtime-config.toml
+          restartPolicy: OnFailure
+          volumes:
+            - name: spin-runtime-config
+              secret:
+                defaultMode: 420
+                items:
+                  - key: runtime-config.toml
+                    path: runtime-config.toml
+                optional: true
+                secretName: rtc

@@ -10,6 +10,9 @@ If you haven't used Spin before, we highly recommend exploring the [Fermyon Deve
 
 ## Architectures & Patterns in this Repository
 
+### CronJobs in Kubernetes
+- [HTTP APIs and CronJob](./api-with-cronjob)
+
 ### CRUD APIs
 - [Go CRUD API with persistence in SQLite](./http-crud-go-sqlite/)
 - [JavaScript CRUD API with persistence in PostgreSQL](./http-crud-js-pg/)
