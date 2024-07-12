@@ -43,6 +43,7 @@ If you haven't used Spin before, we highly recommend exploring the [Fermyon Deve
 
 ### Testing
 - [How to load test Spin Apps with Grafana k6](./load-testing-spin-with-k6/)
+- [OpenTelemetry Integration and automatic instrumentation](./distributed-tracing/)
 
 
 ## Are you looking for a particular pattern or architecture

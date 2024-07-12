@@ -1,0 +1,21 @@
+spin_manifest_version = 2
+
+[application]
+name = "distributed-tracing"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+
+[[trigger.http]]
+route = "/..."
+component = "distributed-tracing"
+
+[component.distributed-tracing]
+source = "target/wasm32-wasi/release/distributed_tracing.wasm"
+environment = { OTEL_EXPORTER_OTLP_ENDPOINT = "http://localhost:4318" }
+allowed_outbound_hosts = []
+key_value_stores = ["default"]
+
+[component.distributed-tracing.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]
