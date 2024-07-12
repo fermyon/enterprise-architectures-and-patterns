@@ -492,9 +492,9 @@ dependencies = [
 
 [[package]]
 name = "spin-sdk"
-version = "2.2.0"
+version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f05d0c09c0935fbb586d0a76e0f14b26b23f421c5e11b81d7200d22c4ead1211"
+checksum = "ed97f54a15f2d8b1fa15e436d88bacb95a5b379a3e0f8fbd8042eb8696ca048a"
 dependencies = [
  "anyhow",
  "async-trait",
