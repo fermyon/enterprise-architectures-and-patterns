@@ -35,7 +35,7 @@ az role assignment create --assignee $CURRENT_USER_ID \
   --scope $KV_SCOPE
 
 # Create a test secret called 'secret` in the Azure Key Vault instance
-az keyvault secret set -n secret --vault-name $KV_NAME --value secret_value --onone
+az keyvault secret set -n secret --vault-name $KV_NAME --value secret_value -o none
 ```
 
 ## 3. Create a Service Principal and Role Assignment for Spin:
