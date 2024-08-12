@@ -15,7 +15,7 @@ const DEFAULT_HEADERS = {
     "Content-Type": "application/json"
 };
 
-const getAllItems = () => {
+const getAllItems = (res) => {
 
     const db = Sqlite.open(DB_NAME);
     const queryResult = db.execute(COMMAND_READ_ALL_ITEMS, []);
@@ -26,41 +26,34 @@ const getAllItems = () => {
             active: row["ACTIVE"] == 1
         }
     });
-    return {
-        status: 200,
-        headers: DEFAULT_HEADERS,
-        body: JSON.stringify(items)
-    };
+    res.set(DEFAULT_HEADERS);
+    res.send(JSON.stringify(items));
 };
 
-const badRequest = (message) => {
-    return {
-        status: 400,
-        headers: DEFAULT_HEADERS,
-        body: JSON.stringify({
-            message
-        })
-    };
+const badRequest = (message, res) => {
+    res.status(400);
+    res.set(DEFAULT_HEADERS);
+    res.send(JSON.stringify({
+        message
+    }));
 };
 
-const notFound = (message) => {
-    return {
-        status: 404,
-        headers: DEFAULT_HEADERS,
-        body: JSON.stringify({
-            message
-        })
-    };
+const notFound = (message, res) => {
+    res.status(404);
+    res.set(DEFAULT_HEADERS);
+    res.send(JSON.stringify({
+        message
+    }));
 }
 
-const getItemById = (id) => {
+const getItemById = (id, res) => {
     if (!uuidValidate(id)) {
-        return badRequest("Invalid identifier received via URL");
+        return badRequest("Invalid identifier received via URL", res);
     }
     const db = Sqlite.open(DB_NAME);
     let queryResult = db.execute(COMMAND_READ_SINGLE_ITEM, [id]);
     if (queryResult.rows.length == 0) {
-        return notFound(`No item found with id ${id}`);
+        return notFound(`No item found with id ${id}`, res);
     }
     let first = queryResult.rows[0];
     let found = {
@@ -68,32 +61,27 @@ const getItemById = (id) => {
         name: first["NAME"],
         active: first["ACTIVE"] == 1
     }
-    return {
-        status: 200,
-        headers: DEFAULT_HEADERS,
-        body: JSON.stringify(found)
-    };
+    res.set(DEFAULT_HEADERS);
+    res.send(JSON.stringify(found));
 };
 
-const deleteItemById = (id) => {
+const deleteItemById = (id, res) => {
     if (!uuidValidate(id)) {
-        return badRequest("Invalid identifier received via URL");
+        return badRequest("Invalid identifier received via URL", res);
     }
     const db = Sqlite.open(DB_NAME);
     db.execute(COMMAND_DELETE_SINGLE_ITEM, [id]);
-    return {
-        status: 204,
-        headers: DEFAULT_HEADERS,
-        body: null
-    };
+    res.status(204);
+    res.set(DEFAULT_HEADERS);
+    res.end();
 };
 
-const deleteManyItems = (requestBody) => {
+const deleteManyItems = (requestBody, res) => {
     let payload = JSON.parse(decoder.decode(requestBody));
     if (!Array.isArray(payload.ids) ||
         payload.ids.length == 0 ||
         !payload.ids.every(id => uuidValidate(id))) {
-        return badRequest("Invalid payload received. Expecting an array with valid uuids");
+        return badRequest("Invalid payload received. Expecting an array with valid uuids", res);
     }
 
     let cmd = `${COMMAND_DELETE_MANY_ITEMS} (`;
@@ -108,16 +96,15 @@ const deleteManyItems = (requestBody) => {
     cmd = `${cmd})`;
     const db = Sqlite.open(DB_NAME);
     db.execute(cmd, parameters);
-    return {
-        status: 204
-    };
+    res.status(204);
+    res.end();
 };
 
-const createItem = (baseUrl, requestBody) => {
+const createItem = (baseUrl, requestBody, res) => {
     let payload = JSON.parse(decoder.decode(requestBody));
 
     if (!payload || !payload.name || typeof payload.active != "boolean") {
-        return badRequest("Invalid payload received. Expecting {\"name\":\"some name\", \"active\": true}");
+        return badRequest("Invalid payload received. Expecting {\"name\":\"some name\", \"active\": true}", res);
     }
 
     const newItem = {
@@ -137,20 +124,18 @@ const createItem = (baseUrl, requestBody) => {
     };
     Object.assign(customHeaders, DEFAULT_HEADERS);
 
-    return {
-        status: 201,
-        headers: customHeaders,
-        body: JSON.stringify(newItem)
-    };
+    res.status(201);
+    res.set(customHeaders)
+    res.send(JSON.stringify(newItem));
 };
 
-const updateItemById = (baseUrl, id, requestBody) => {
+const updateItemById = (baseUrl, id, requestBody, res) => {
     let payload = JSON.parse(decoder.decode(requestBody));
     if (!payload || !payload.name || typeof payload.active != "boolean") {
-        return badRequest("Invalid payload received. Expecting {\"name\":\"some name\", \"active\": true}");
+        return badRequest("Invalid payload received. Expecting {\"name\":\"some name\", \"active\": true}", res);
     }
     if (!uuidValidate(id)) {
-        return badRequest("Invalid identifier received via URL");
+        return badRequest("Invalid identifier received via URL", res);
     }
     const db = Sqlite.open(DB_NAME);
     let item = {
@@ -169,11 +154,8 @@ const updateItemById = (baseUrl, id, requestBody) => {
     };
     Object.assign(customHeaders, DEFAULT_HEADERS);
 
-    return {
-        status: 200,
-        headers: customHeaders,
-        body: JSON.stringify(item)
-    };
+    res.set(customHeaders);
+    res.send(JSON.stringify(item));
 };
 
 export {

@@ -3,20 +3,20 @@ import { deleteItemById, deleteManyItems, getAllItems, getItemById, createItem, 
 
 const router = Router();
 
-router.get("/items", () => getAllItems());
-router.get("/items/:id", ({ params }) => getItemById(params.id));
-router.post("/items", ({ }, requestBody, { baseUrl }) => createItem(baseUrl, requestBody));
-router.put("/items/:id", ({ params }, requestBody, { baseUrl }) => updateItemById(baseUrl, params.id, requestBody));
-router.delete("/items", ({ }, payload) => deleteManyItems(payload));
-router.delete("/items/:id", ({ params }) => deleteItemById(params.id));
-router.all("*", () => notFound("Endpoint not found"));
+router.get("/items", (_metadata, _req, res) => getAllItems(res));
+router.get("/items/:id", ({ params }, _req, res) => getItemById(params.id, res));
+router.post("/items", async ({ }, req, res, { baseUrl }) => createItem(baseUrl, await req.arrayBuffer(), res));
+router.put("/items/:id", async ({ params }, req, res, { baseUrl }) => updateItemById(baseUrl, params.id, await req.arrayBuffer(), res));
+router.delete("/items", async ({ }, req, res) => deleteManyItems(await req.arrayBuffer(), res));
+router.delete("/items/:id", ({ params }, _req, res) => deleteItemById(params.id, res));
+router.all("*", (_metadata, _req, res) => notFound("Endpoint not found", res));
 
-export async function handleRequest(request) {
-    let fullUrl = request.headers["spin-full-url"];
-    let path = request.headers["spin-path-info"];
-    let baseUrl = fullUrl.substr(0, fullUrl.indexOf(path))
+export async function handler(req, res) {
+    const fullUrl = req.headers.get("spin-full-url");
+    const path = req.headers.get("spin-path-info");
+    const baseUrl = fullUrl.substr(0, fullUrl.indexOf(path))
 
-    return await router.handleRequest(request, request.body, {
+    return await router.handleRequest(req, res, {
         baseUrl,
         fullUrl,
         path
