@@ -4,21 +4,21 @@ import { deleteItemById, deleteManyItems, getAllItems, getItemById, createItem, 
 
 const router = Router();
 
-router.get("/items", loadConfig, ({ config }) => getAllItems(config));
-router.get("/items/:id", loadConfig, ({ params, config }) => getItemById(config, params.id));
-router.post("/items", loadConfig, ({ config }, requestBody, { baseUrl }) => createItem(config, baseUrl, requestBody));
-router.put("/items/:id", loadConfig, ({ config, params }, requestBody, { baseUrl }) => updateItemById(config, baseUrl, params.id, requestBody));
-router.delete("/items", loadConfig, ({ config }, payload) => deleteManyItems(config, payload));
-router.delete("/items/:id", loadConfig, ({ params, config }) => deleteItemById(config, params.id));
+router.get("/items", loadConfig, ({ config }, _req, res) => getAllItems(config, res));
+router.get("/items/:id", loadConfig, ({ params, config }, _req, res) => getItemById(config, params.id, res));
+router.post("/items", loadConfig, async ({ config }, req, res, { baseUrl }) => createItem(config, baseUrl, await req.arrayBuffer(), res));
+router.put("/items/:id", loadConfig, async ({ config, params }, req, res, { baseUrl }) => updateItemById(config, baseUrl, params.id, await req.arrayBuffer(), res));
+router.delete("/items", loadConfig, async ({ config }, req, res) => deleteManyItems(config, await req.arrayBuffer(), res));
+router.delete("/items/:id", loadConfig, ({ params, config }, _req, res) => deleteItemById(config, params.id, res));
 router.all("*", () => notFound("Endpoint not found"));
 
-export async function handleRequest(request) {
+export async function handler(request, res) {
 
-    let fullUrl = request.headers["spin-full-url"];
-    let path = request.headers["spin-path-info"];
-    let baseUrl = fullUrl.substr(0, fullUrl.indexOf(path))
+    const fullUrl = request.headers.get("spin-full-url");
+    const path = request.headers.get("spin-path-info");
+    const baseUrl = fullUrl.substr(0, fullUrl.indexOf(path))
 
-    return await router.handleRequest(request, request.body, {
+    return await router.handleRequest(request, res, {
         baseUrl,
         fullUrl,
         path

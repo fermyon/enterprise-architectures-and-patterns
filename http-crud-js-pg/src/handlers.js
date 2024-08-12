@@ -1,4 +1,4 @@
-import { Pg } from "@fermyon/spin-sdk";
+import { Postgres } from "@fermyon/spin-sdk";
 import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 const decoder = new TextDecoder();
@@ -14,81 +14,73 @@ const DEFAULT_HEADERS = {
     "Content-Type": "application/json"
 };
 
-const getAllItems = (config) => {
-    const queryResult = Pg.query(config.dbConnectionString, COMMAND_READ_ALL_ITEMS, []);
+const getAllItems = (config, res) => {
+    let con = Postgres.open(config.dbConnectionString);
+    const queryResult = con.query(COMMAND_READ_ALL_ITEMS, []);
     let items = queryResult.rows.map(row => {
+        console.log(JSON.stringify(row))
         return {
-            id: row[0],
-            name: row[1],
-            active: row[2]
+            id: row["id"],
+            name: row["name"],
+            active: row["active"]
         }
     });
 
-    return {
-        status: 200,
-        headers: DEFAULT_HEADERS,
-        body: JSON.stringify(items)
-    };
+    res.set(DEFAULT_HEADERS);
+    res.send(JSON.stringify(items));
 };
 
-const badRequest = (message) => {
-    return {
-        status: 400,
-        headers: DEFAULT_HEADERS,
-        body: JSON.stringify({
-            message
-        })
-    };
+const badRequest = (message, res) => {
+    res.status(400);
+    res.set(DEFAULT_HEADERS);
+    res.send(JSON.stringify({
+        message
+    }));
 };
 
-const notFound = (message) => {
-    return {
-        status: 404,
-        headers: DEFAULT_HEADERS,
-        body: JSON.stringify({
-            message
-        })
-    };
+const notFound = (message, res) => {
+    res.status(404);
+    res.set(DEFAULT_HEADERS);
+    res.send(JSON.stringify({
+        message
+    }));
 }
 
-const getItemById = (config, id) => {
+const getItemById = (config, id, res) => {
     if (!uuidValidate(id)) {
-        return badRequest("Invalid identifier received via URL");
+        return badRequest("Invalid identifier received via URL", res);
     }
-    let queryResult = Pg.query(config.dbConnectionString, COMMAND_READ_SINGLE_ITEM, [id]);
+    let con = Postgres.open(config.dbConnectionString);
+    let queryResult = con.query(COMMAND_READ_SINGLE_ITEM, [id]);
     if (queryResult.rows.length == 0) {
-        return notFound(`No item found with id ${id}`);
+        return notFound(`No item found with id ${id}`, res);
     }
     let found = {
-        id: queryResult.rows[0][0],
-        name: queryResult.rows[0][1],
-        active: queryResult.rows[0][2]
+        id: queryResult.rows[0]["id"],
+        name: queryResult.rows[0]["name"],
+        active: queryResult.rows[0]["active"]
     }
-    return {
-        status: 200,
-        headers: DEFAULT_HEADERS,
-        body: JSON.stringify(found)
-    };
+    res.set(DEFAULT_HEADERS);
+    res.send(JSON.stringify(found));
 };
 
-const deleteItemById = (config, id) => {
+const deleteItemById = (config, id, res) => {
     if (!uuidValidate(id)) {
-        return badRequest("Invalid identifier received via URL");
+        return badRequest("Invalid identifier received via URL", res);
     }
-    Pg.execute(config.dbConnectionString, COMMAND_DELETE_SINGLE_ITEM, [id]);
-    return {
-        status: 204,
-        headers: DEFAULT_HEADERS,
-        body: null
-    };
+    let con = Postgres.open(config.dbConnectionString);
+    con.execute(COMMAND_DELETE_SINGLE_ITEM, [id]);
+    res.status(204);
+    res.set(DEFAULT_HEADERS);
+    res.end();
 };
 
-const deleteManyItems = (config, requestBody) => {
+const deleteManyItems = (config, requestBody, res) => {
     let payload = JSON.parse(decoder.decode(requestBody));
     if (!Array.isArray(payload.ids) ||
         payload.ids.length == 0 ||
         !payload.ids.every(id => uuidValidate(id))) {
-        return badRequest("Invalid payload received. Expecting an array with valid uuids");
+        return badRequest("Invalid payload received. Expecting an array with valid uuids", res);
     }
 
     let cmd = `${COMMAND_DELETE_MANY_ITEMS} (`;
@@ -101,18 +93,17 @@ const deleteManyItems = (config, requestBody) => {
         parameters.push(payload.ids[i]);
     }
     cmd = `${cmd})`;
-
-    Pg.execute(config.dbConnectionString, cmd, parameters);
-    return {
-        status: 204
-    };
+    let con = Postgres.open(config.dbConnectionString);
+    con.execute(cmd, parameters);
+    res.status(204)
+    res.end()
 };
 
-const createItem = (config, baseUrl, requestBody) => {
+const createItem = (config, baseUrl, requestBody, res) => {
     let payload = JSON.parse(decoder.decode(requestBody));
 
     if (!payload || !payload.name || typeof payload.active != "boolean") {
-        return badRequest("Invalid payload received. Expecting {\"name\":\"some name\", \"active\": true}");
+        return badRequest("Invalid payload received. Expecting {\"name\":\"some name\", \"active\": true}", res);
     }
 
     const newItem = {
@@ -121,7 +112,8 @@ const createItem = (config, baseUrl, requestBody) => {
         active: payload.active
     };
 
-    Pg.execute(config.dbConnectionString, COMMAND_CREATE_ITEM, [
+    let con = Postgres.open(config.dbConnectionString);
+    con.execute(COMMAND_CREATE_ITEM, [
         newItem.id,
         newItem.name,
         newItem.active
@@ -132,20 +124,18 @@ const createItem = (config, baseUrl, requestBody) => {
     };
     Object.assign(customHeaders, DEFAULT_HEADERS);
 
-    return {
-        status: 201,
-        headers: customHeaders,
-        body: JSON.stringify(newItem)
-    };
+    res.status(201);
+    res.set(customHeaders);
+    res.send(JSON.stringify(newItem));
 };
 
-const updateItemById = (config, baseUrl, id, requestBody) => {
+const updateItemById = (config, baseUrl, id, requestBody, res) => {
     let payload = JSON.parse(decoder.decode(requestBody));
     if (!payload || !payload.name || typeof payload.active != "boolean") {
-        return badRequest("Invalid payload received. Expecting {\"name\":\"some name\", \"active\": true}");
+        return badRequest("Invalid payload received. Expecting {\"name\":\"some name\", \"active\": true}", res);
     }
     if (!uuidValidate(id)) {
-        return badRequest("Invalid identifier received via URL");
+        return badRequest("Invalid identifier received via URL", res);
     }
 
     const item = {
@@ -153,8 +143,8 @@ const updateItemById = (config, baseUrl, id, requestBody) => {
         name: payload.name,
         active: payload.active
     }
-
-    Pg.execute(config.dbConnectionString, COMMAND_UPDATE_SINGLE_ITEM, [
+    let con = Postgres.open(config.dbConnectionString);
+    con.execute(COMMAND_UPDATE_SINGLE_ITEM, [
         item.name,
         item.active,
         item.id
@@ -165,11 +155,8 @@ const updateItemById = (config, baseUrl, id, requestBody) => {
     };
     Object.assign(customHeaders, DEFAULT_HEADERS);
 
-    return {
-        status: 200,
-        headers: customHeaders,
-        body: JSON.stringify(item)
-    };
+    res.set(customHeaders);
+    res.send(JSON.stringify(item));
 };
 
 export {

@@ -1,8 +1,8 @@
-import { Config } from "@fermyon/spin-sdk";
+import { Variables } from "@fermyon/spin-sdk";
 
-const loadConfig = (request) => {
-    request.config = {
-        dbConnectionString: Config.get("db_connection_string")
+const loadConfig = (metadata, request) => {
+    metadata.config = {
+        dbConnectionString: Variables.get("db_connection_string")
     };
 };
 
