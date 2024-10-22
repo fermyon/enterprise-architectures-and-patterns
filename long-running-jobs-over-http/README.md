@@ -52,7 +52,7 @@ Both workers will report the job as `Failed` if you provide `FooBar` (will be lo
 To run the sample locally, you can use different targets specified in the `Makefile`. As the sample contains two different workers (for demonstration purposes, choose which one you prefer):
 
 ```bash
-# Start Redis
+# Start MQTT broker
 make start-mosquitto
 
 # run the mass-publisher
