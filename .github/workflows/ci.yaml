@@ -27,6 +27,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          # choosing one of the go projects to determine version
+          go-version-file: 'http-crud-go-sqlite/go.mod'
       - name: Install TinyGo
         uses: rajatjindal/setup-actions/tinygo@v0.0.1
         with:
