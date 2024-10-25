@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Transformations powered by Spin</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 font-sans antialiased">
+  <header class="bg-indigo-800 py-6 shadow-lg">
+    <h1 class="text-center text-3xl font-bold text-white">Image Transformations powered by Spin</h1>
+  </header>
+  <main class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <div class="mb-4">
+      <label for="filter" class="block text-gray-700 font-semibold mb-2">Choose a transformation:</label>
+      <select id="filter"
+        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <option value="/api/resize/300">Resize</option>
+        <option value="/api/colorize/grayscale">Grayscale</option>
+        <option value="/api/stack/grayscale/600">Atomic: Reize and Grayscale</option>
+        <option value="/api/colorize/sepia">Sepia</option>
+        <option value="/api/flip/horizontal">Flip (horizontal)</option>
+        <option value="/api/flip/vertical">Flip (vertical)</option>
+        <option value="/api/remove_channel/red">Remove Red Channel</option>
+        <option value="/api/remove_channel/green">Remove Green Channel</option>
+        <option value="/api/remove_channel/blue">Remove Blue Channel</option>
+        <option value="/api/filters/golden">Filter: Golden</option>
+        <option value="/api/filters/lix">Filter: Lix</option>
+        <option value="/api/filters/firenze">Filter: Firenze</option>
+        <option value="/api/filters/lofi">Filter: Lofi</option>
+        <option value="/api/filters/neue">Filter: Neue</option>
+        <option value="/api/filters/obsidian">Filter: Obsidian</option>
+        <option value="/api/filters/pastel_pink">Filter: Pastel Pink</option>
+        <option value="/api/filters/ryo">Filter: RYO</option>
+        <option value="/api/filters/cali">Filter: Cali</option>
+        <option value="/api/filters/dramatic">Filter: Dramatic</option>
+        <option value="/api/filters/duotone_horizon">Filter: Duo Tone Horizon</option>
+        <option value="/api/filters/duotone_lilac">Filter: Duo Tone LiLac</option>
+        <option value="/api/filters/duotone_ochre">Filter: Duo Tone Ochre</option>
+        <option value="/api/filters/duotone_violette">Filter: Duo Tone Violette</option>
+      </select>
+    </div>
+    <div class="mb-6">
+      <label for="image" class="block text-gray-700 font-semibold mb-2">Upload an image (&lt;1MB):</label>
+      <input type="file" id="image" accept="image/*"
+        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+    </div>
+    <button onclick="transform()"
+      class="w-full bg-indigo-900 text-white font-bold py-2 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      Transform Image
+    </button>
+    <p id="err" class="text-center"></p>
+  </main>
+  <section id="result" class="flex flex-col items-center justify-center mt-6 p-4 text-center"
+    style="padding-left: 5%; padding-right: 5%;"></section>
+  <section id="original" class="flex flex-col items-center justify-center mt-6 p-4 text-center"
+    style="padding-left: 5%; padding-right: 5%;"></section>
+  <script src="/app.js"></script>
+</body>
+
+</html>

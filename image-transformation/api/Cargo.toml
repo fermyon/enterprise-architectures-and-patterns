@@ -1,0 +1,17 @@
+[package]
+name = "api"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = "1"
+photon-rs = { default-features = false, git = "https://github.com/silvia-odwyer/photon", rev = "8b17f68579e1b17edf3428a5ffcd22b4f99af6ec" }
+serde_json = "1.0.132"
+spin-sdk = "3.0.1"
+
+[workspace]
