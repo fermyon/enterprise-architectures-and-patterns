@@ -13,7 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "mkdirp": "^3.0.1",
-    "webpack": "^5.74.0",
+    "webpack": "^5.95.0",
     "webpack-cli": "^4.10.0",
     "@fermyon/knitwit": "https://github.com/fermyon/knitwit"
   },
