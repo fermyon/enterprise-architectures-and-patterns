@@ -48,8 +48,6 @@ You can deploy this sample to Fermyon Cloud following the steps below:
 spin cloud login
 
 # Deploy the sample to Fermyon Cloud
-# This will ask if a new database should be created or an existing one should be used
-# Answer the question with "create a new database"
 spin deploy
 Uploading image-transformation version 0.1.0 to Fermyon Cloud...
 Deploying...
