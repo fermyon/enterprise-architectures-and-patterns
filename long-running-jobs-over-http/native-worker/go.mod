@@ -1,6 +1,6 @@
 module github.com/fermyon/enterprise-architectures-and-patterns/long-running-jobs-over-http/non-spin-worker
 
-go 1.22.1
+go 1.23
 
 require (
 	github.com/eclipse/paho.mqtt.golang v1.4.3
