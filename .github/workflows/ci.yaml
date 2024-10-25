@@ -116,3 +116,7 @@ jobs:
           cd ..
           cd subscriber-rust
           spin build
+      - name: Build Image Transformation (Rust) App
+        run: |
+          cd image-transformation
+          spin build
