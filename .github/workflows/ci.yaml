@@ -10,7 +10,7 @@ env:
   CARGO_TERM_COLOR: always
   RUST_VERSION: 1.74
   TINYGO_VERSION: v0.33.0
-  NODE_VERSION: 16
+  NODE_VERSION: 22
   GO_VERSION: 1.23
 jobs:
   build-apps:

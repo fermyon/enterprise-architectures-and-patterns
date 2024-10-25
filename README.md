@@ -1,5 +1,7 @@
 # Enterprise Architectures & Patterns
 
+[![Build Status](https://github.com/fermyon/enterprise-architectures-and-patterns/actions/workflows/ci.yaml/badge.svg)](https://github.com/fermyon/enterprise-architectures-and-patterns/actions/workflows/ci.yaml)
+
 This repository contains a collection of enterprise architectures and patterns, to illustrate the potential of [Spin](https://github.com/fermyon/spin) and WebAssembly (Wasm) for building real-world applications.
 
 Each folder contains a self-contained example, including a high-level explanation of the pattern/architecture and instructions on how to build and run the particular Spin App(s).
@@ -29,6 +31,7 @@ If you haven't used Spin before, we highly recommend exploring the [Fermyon Deve
 - [Cross-Origin Resource Sharing (CORS)](./cors-rust/)
 - [Long Running Jobs over HTTP](./long-running-jobs-over-http/)
 - [Transparent Caching](./caching-rust/)
+- [Image Transformation](./image-transformation/)
 
 ### Application Variables (aka Configuration Data)
 - [Using the Azure Key Vault Application Variable Provider](./application-variable-providers/azure-key-vault-provider/)
