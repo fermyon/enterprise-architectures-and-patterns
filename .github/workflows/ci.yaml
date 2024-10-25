@@ -1,6 +1,9 @@
 name: CI
 
 on:
+  schedule:
+    # Runs at 2:00 AM every Sunday
+    - cron: "0 2 * * 0"
   push:
     branches: ["main"]
   pull_request:
@@ -37,6 +40,7 @@ jobs:
         with:
           version: ${{ env.TINYGO_VERSION }}
       - name: Install Spin
+        # Latest Spin Stable Release
         uses: fermyon/actions/spin/setup@v1
         with:
           plugins: js2wasm
@@ -46,6 +50,15 @@ jobs:
           cd customers-service
           npm install
           cd ..
+          spin build
+      - name: Build CRUD (Go) SQLite App
+        run: |
+          cd http-crud-go-sqlite
+          spin build
+      - name: Build CRUD (JS) PostgreSQL App
+        run: |
+          cd http-crud-js-pg
+          npm install
           spin build
       - name: Build Azure Key Vault Provider App
         run: |
@@ -74,15 +87,6 @@ jobs:
       - name: Build CQRS (Go) App
         run: |
           cd cqrs-go
-          spin build
-      - name: Build CRUD (Go) SQLite App
-        run: |
-          cd http-crud-go-sqlite
-          spin build
-      - name: Build CRUD (JS) PostgreSQL App
-        run: |
-          cd http-crud-js-pg
-          npm install
           spin build
       - name: Build CRUD (JS) SQLite App
         run: |
