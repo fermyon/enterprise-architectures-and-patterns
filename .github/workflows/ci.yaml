@@ -11,7 +11,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  RUST_VERSION: 1.74
+  RUST_VERSION: 1.80.1
   TINYGO_VERSION: v0.33.0
   NODE_VERSION: 22
   GO_VERSION: 1.23
@@ -30,7 +30,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: ${{ env.RUST_VERSION }}
-          targets: wasm32-wasi
+          targets: wasm32-wasi,wasm32-wasip1
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
