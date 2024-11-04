@@ -44,9 +44,11 @@ jobs:
         uses: fermyon/actions/spin/setup@v1
         with:
           plugins: js2wasm
-      - name: Install Command Trigger (canary)
+      - name: Install Command Trigger (canary) and it's dependencies
         run: |
           spin plugins install --yes --url https://github.com/fermyon/spin-trigger-command/releases/download/canary/trigger-command.json
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          cargo binstall cargo-component
       - name: Build Aggregate App
         run: |
           cd aggregate-pattern
