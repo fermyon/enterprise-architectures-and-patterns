@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: stats-generator
+spec:
+  schedule: "*/2 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          runtimeClassName: wasmtime-spin-v2
+          containers:
+            - name: cron
+              image: ttl.sh/spin-todo-stats-generator:24h
+              command:
+                - /
+              env:
+                - name: "SPIN_VARIABLE_DB_HOST"
+                  value: "todo-db"
+                - name: "SPIN_VARIABLE_DB_CONNECTION_STRING"
+                  valueFrom:
+                    secretKeyRef:
+                      name: db-config
+                      key: connectionstring
+          restartPolicy: OnFailure

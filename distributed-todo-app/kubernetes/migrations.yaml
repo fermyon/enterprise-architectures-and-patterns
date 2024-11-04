@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrations
+spec:
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      runtimeClassName: wasmtime-spin-v2
+      containers:
+        - name: migrations
+          image: ttl.sh/spin-todo-migrations:24h
+          command:
+            - /
+          env:
+            - name: "SPIN_VARIABLE_DB_HOST"
+              value: "todo-db"
+            - name: "SPIN_VARIABLE_DB_CONNECTION_STRING"
+              valueFrom:
+                secretKeyRef:
+                  name: db-config
+                  key: connectionstring
+      restartPolicy: Never

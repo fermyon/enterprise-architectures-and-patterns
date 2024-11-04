@@ -25,7 +25,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: '${{ env.GO_VERSION }}'
+          go-version: "${{ env.GO_VERSION }}"
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -44,6 +44,9 @@ jobs:
         uses: fermyon/actions/spin/setup@v1
         with:
           plugins: js2wasm
+      - name: Install Command Trigger (canary)
+        run: |
+          spin plugins install --yes --url https://github.com/fermyon/spin-trigger-command/releases/download/canary/trigger-command.json
       - name: Build Aggregate App
         run: |
           cd aggregate-pattern
@@ -124,3 +127,16 @@ jobs:
         run: |
           cd image-transformation
           spin build
+      - name: Build distributed ToDo-app (Rust)
+        run: |
+          cd distributed-todo-app
+          cd src
+          cd http-api
+          spin build 
+          cd ..
+          cd migrations
+          spin build
+          cd ..
+          cd stats-generator
+          spin build
+          cd ..

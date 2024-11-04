@@ -1,0 +1,19 @@
+[package]
+name = "stats-generator"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+version = "0.1.0"
+edition = "2021"
+
+[package.metadata.component]
+package = "component:stats-generator"
+
+[package.metadata.component.dependencies]
+
+[dependencies]
+anyhow = "1.0.92"
+spin-sdk = "3.0.1"
+spin-executor = "3.0.1"
+wit-bindgen-rt = { version = "0.34.0", features = ["bitflags"] }
+
+[workspace]

@@ -14,6 +14,7 @@ If you haven't used Spin before, we highly recommend exploring the [Fermyon Deve
 
 ### CronJobs in Kubernetes
 - [HTTP APIs and CronJob](./api-with-cronjob)
+- [Distributed ToDo-App](./distributed-todo-app/)
 
 ### CRUD APIs
 - [Go CRUD API with persistence in SQLite](./http-crud-go-sqlite/)

@@ -1,0 +1,16 @@
+apiVersion: core.spinoperator.dev/v1alpha1
+kind: SpinApp
+metadata:
+  name: todo-api
+spec:
+  image: "ttl.sh/spin-todo-api:24h"
+  variables:
+    - name: "db_host"
+      value: "todo-db"
+    - name: "db_connection_string"
+      valueFrom:
+        secretKeyRef:
+          name: db-config
+          key: connectionstring
+  executor: containerd-shim-spin
+  replicas: 2

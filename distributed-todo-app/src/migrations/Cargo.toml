@@ -1,0 +1,20 @@
+[package]
+name = "migrations"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+version = "0.1.0"
+edition = "2021"
+
+[package.metadata.component]
+package = "component:migrations"
+
+[package.metadata.component.dependencies]
+
+[dependencies]
+anyhow = "1.0.92"
+spin-sdk = "3.0.1"
+spin-executor = "3.0.1"
+wit-bindgen-rt = { version = "0.26.0", features = ["bitflags"] }
+rust-embed = "8.5.0"
+
+[workspace]

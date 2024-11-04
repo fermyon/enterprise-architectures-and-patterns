@@ -1,0 +1,25 @@
+spin_manifest_version = 2
+
+[application]
+name = "cron"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+
+[variables]
+db_host = { default = "localhost" }
+db_connection_string = { default = "postgres://timmy:secret@localhost/todo" }
+
+[[trigger.command]]
+component = "stats-generator"
+
+[component.stats-generator]
+source = "target/wasm32-wasi/release/stats-generator.wasm"
+allowed_outbound_hosts = ["postgres://{{ db_host }}:5432"]
+
+[component.stats-generator.variables]
+connection_string = "{{ db_connection_string }}"
+
+[component.stats-generator.build]
+command = "cargo component build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]

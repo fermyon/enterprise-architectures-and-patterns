@@ -1,0 +1,26 @@
+spin_manifest_version = 2
+
+[application]
+name = "http-api"
+version = "0.1.0"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+
+[variables]
+db_host = { default = "localhost" }
+db_connection_string = { default = "postgres://timmy:secret@localhost/todo" }
+
+[[trigger.http]]
+route = "/..."
+component = "http-api"
+
+[component.http-api]
+source = "target/wasm32-wasi/release/http_api.wasm"
+allowed_outbound_hosts = ["postgres://{{ db_host }}:5432"]
+
+[component.http-api.variables]
+connection_string = "{{ db_connection_string }}"
+
+[component.http-api.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]
