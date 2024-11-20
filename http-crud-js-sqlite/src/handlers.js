@@ -1,4 +1,4 @@
-import { Sqlite } from "@fermyon/spin-sdk";
+import { Sqlite, Variables } from "@fermyon/spin-sdk";
 import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 const decoder = new TextDecoder();
@@ -15,9 +15,18 @@ const DEFAULT_HEADERS = {
     "Content-Type": "application/json"
 };
 
-const getAllItems = (res) => {
+const getResponseHeaders = (defaultHeaders) => {
+    let v = Variables.get("spin_runtime_name");
+    let headers = {
+        "X-Spin-Runtime": v
+    }
+    Object.assign(headers, defaultHeaders)
+    return headers;
+}
 
+const getAllItems = (res) => {
     const db = Sqlite.open(DB_NAME);
+    console.log("Loading all items from database");
     const queryResult = db.execute(COMMAND_READ_ALL_ITEMS, []);
     let items = queryResult.rows.map(row => {
         return {
@@ -26,7 +35,8 @@ const getAllItems = (res) => {
             active: row["ACTIVE"] == 1
         }
     });
-    res.set(DEFAULT_HEADERS);
+    console.log(`Loaded ${items.length} items from database`);
+    res.set(getResponseHeaders(DEFAULT_HEADERS));
     res.send(JSON.stringify(items));
 };
 
@@ -51,8 +61,10 @@ const getItemById = (id, res) => {
         return badRequest("Invalid identifier received via URL", res);
     }
     const db = Sqlite.open(DB_NAME);
+    console.log(`Loading item with id ${id} from database`);
     let queryResult = db.execute(COMMAND_READ_SINGLE_ITEM, [id]);
     if (queryResult.rows.length == 0) {
+        console.log(`Item with id ${id} not found in database`);
         return notFound(`No item found with id ${id}`, res);
     }
     let first = queryResult.rows[0];
@@ -61,7 +73,8 @@ const getItemById = (id, res) => {
         name: first["NAME"],
         active: first["ACTIVE"] == 1
     }
-    res.set(DEFAULT_HEADERS);
+    console.log(`Found item with id ${id} in database`);
+    res.set(getResponseHeaders(DEFAULT_HEADERS));
     res.send(JSON.stringify(found));
 };
 
@@ -70,9 +83,10 @@ const deleteItemById = (id, res) => {
         return badRequest("Invalid identifier received via URL", res);
     }
     const db = Sqlite.open(DB_NAME);
+    console.log(`Removing item with id ${id} from database`);
     db.execute(COMMAND_DELETE_SINGLE_ITEM, [id]);
     res.status(204);
-    res.set(DEFAULT_HEADERS);
+    res.set(getResponseHeaders(DEFAULT_HEADERS));
     res.end();
 };
 
@@ -95,8 +109,10 @@ const deleteManyItems = (requestBody, res) => {
     }
     cmd = `${cmd})`;
     const db = Sqlite.open(DB_NAME);
+    console.log(`Removing items with ids (${payload.ids.join(',')}) from database`);
     db.execute(cmd, parameters);
     res.status(204);
+    res.set(getResponseHeaders(DEFAULT_HEADERS))
     res.end();
 };
 
@@ -113,6 +129,7 @@ const createItem = (baseUrl, requestBody, res) => {
         active: payload.active
     };
     const db = Sqlite.open(DB_NAME);
+    console.log(`Inserting new item (${payload.name}) in database`);
     db.execute(COMMAND_CREATE_ITEM, [
         newItem.id,
         newItem.name,
@@ -125,7 +142,7 @@ const createItem = (baseUrl, requestBody, res) => {
     Object.assign(customHeaders, DEFAULT_HEADERS);
 
     res.status(201);
-    res.set(customHeaders)
+    res.set(getResponseHeaders(customHeaders))
     res.send(JSON.stringify(newItem));
 };
 
@@ -138,6 +155,7 @@ const updateItemById = (baseUrl, id, requestBody, res) => {
         return badRequest("Invalid identifier received via URL", res);
     }
     const db = Sqlite.open(DB_NAME);
+    console.log(`Updating item with id ${id} in database`);
     let item = {
         id: id,
         name: payload.name,
@@ -154,7 +172,7 @@ const updateItemById = (baseUrl, id, requestBody, res) => {
     };
     Object.assign(customHeaders, DEFAULT_HEADERS);
 
-    res.set(customHeaders);
+    res.set(getResponseHeaders(customHeaders));
     res.send(JSON.stringify(item));
 };
 

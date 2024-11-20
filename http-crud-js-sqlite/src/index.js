@@ -15,7 +15,7 @@ export async function handler(req, res) {
     const fullUrl = req.headers.get("spin-full-url");
     const path = req.headers.get("spin-path-info");
     const baseUrl = fullUrl.substr(0, fullUrl.indexOf(path))
-
+    console.info(`Processing incoming ${req.method} request for ${path}`);
     return await router.handleRequest(req, res, {
         baseUrl,
         fullUrl,

@@ -6,6 +6,8 @@ description = ""
 name = "http-crud-js-sqlite"
 version = "0.1.0"
 
+[variables]
+spin_runtime_name = { default = "spin-cli" }
 
 [[trigger.http]]
 route = "/..."
@@ -16,6 +18,9 @@ source = "target/http-crud-js-sqlite.wasm"
 exclude_files = ["**/node_modules"]
 sqlite_databases = ["default"]
 allowed_outbound_hosts = []
+
+[component.crud-api.variables]
+spin_runtime_name = "{{ spin_runtime_name }}"
 
 [component.crud-api.build]
 command = "npm run build"

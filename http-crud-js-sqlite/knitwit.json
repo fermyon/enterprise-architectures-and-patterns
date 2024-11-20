@@ -8,7 +8,7 @@
   "packages": {
     "@fermyon/spin-sdk": {
       "witPath": "../../bin/wit",
-      "world": "spin-imports"
+      "world": "spin3-imports"
     }
   }
 }
