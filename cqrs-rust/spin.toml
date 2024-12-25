@@ -11,10 +11,10 @@ route = "/..."
 component = "cqrs-rust"
 
 [component.cqrs-rust]
-source = "target/wasm32-wasi/release/cqrs_rust.wasm"
+source = "target/wasm32-wasip1/release/cqrs_rust.wasm"
 allowed_outbound_hosts = []
 sqlite_databases = ["default"]
 
 [component.cqrs-rust.build]
-command = "cargo build --target wasm32-wasi --release"
+command = "cargo build --target wasm32-wasip1 --release"
 watch = ["src/**/*.rs", "Cargo.toml"]
