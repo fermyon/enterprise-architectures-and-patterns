@@ -18,63 +18,70 @@ const QUERY_SINGLE_COMMAND: &str = "SELECT Employees.Id, Employees.FirstName, Em
 pub struct Queries {}
 
 impl Queries {
-    /// Query to retrieve all products
+    /// Query to retrieve all employees
     pub fn all_employees() -> anyhow::Result<Vec<EmployeeListModel>> {
         let con = Connection::open(DB_NAME)?;
         let query_result = con.execute(QUERY_ALL_COMMAND, &[])?;
-        let products = query_result
+        let employees = query_result
             .rows()
             .map(|row| {
                 let id = String::from(
-                    row.get::<&str>("Employees.Id")
-                        .ok_or_else(|| anyhow!("Employees.Id not present"))?,
+                    row.get::<&str>("Id")
+                        .ok_or_else(|| anyhow!("Id not present"))?,
                 );
                 let name = String::from(
                     row.get::<&str>("Name")
                         .ok_or_else(|| anyhow!("Name not present"))?,
                 );
                 let city = String::from(
-                    row.get::<&str>("Addresses.City")
-                        .ok_or_else(|| anyhow!("Addresses.City not present"))?,
+                    row.get::<&str>("City")
+                        .ok_or_else(|| anyhow!("City not present"))?,
                 );
+
                 anyhow::Ok(EmployeeListModel { id, name, city })
+            })
+            .map(|item| {
+                item.map_err(|err| {
+                    println!("{}", err);
+                })
             })
             .filter(|item| item.is_ok())
             .map(|item| item.unwrap())
             .collect();
-        Ok(products)
+
+        Ok(employees)
     }
 
-    /// Query to retrieve a particular product using its identifier
+    /// Query to retrieve a particular employee using its identifier
     pub fn employee_by_id(id: String) -> anyhow::Result<Option<EmployeeDetailsModel>> {
         let con = Connection::open(DB_NAME)?;
         let params = vec![Value::Text(id)];
         let query_result = con.execute(QUERY_SINGLE_COMMAND, &params)?;
-        let product = match query_result.rows().next() {
+        let employee = match query_result.rows().next() {
             Some(row) => {
                 let id = String::from(
-                    row.get::<&str>("Employees.Id")
-                        .ok_or_else(|| anyhow!("Employees.Id not present"))?,
+                    row.get::<&str>("Id")
+                        .ok_or_else(|| anyhow!("Id not present"))?,
                 );
                 let first_name = String::from(
-                    row.get::<&str>("Employees.FirstName")
-                        .ok_or_else(|| anyhow!("Employees.FirstName not present"))?,
+                    row.get::<&str>("FirstName")
+                        .ok_or_else(|| anyhow!("FirstName not present"))?,
                 );
                 let last_name = String::from(
-                    row.get::<&str>("Employees.LastName")
-                        .ok_or_else(|| anyhow!("Employees.LastName not present"))?,
+                    row.get::<&str>("LastName")
+                        .ok_or_else(|| anyhow!("LastName not present"))?,
                 );
                 let street = String::from(
-                    row.get::<&str>("Addresses.Street")
-                        .ok_or_else(|| anyhow!("Addresses.Street not present"))?,
+                    row.get::<&str>("Street")
+                        .ok_or_else(|| anyhow!("Street not present"))?,
                 );
                 let zip = String::from(
-                    row.get::<&str>("Addresses.Zip")
-                        .ok_or_else(|| anyhow!("Addresses.Zip not present"))?,
+                    row.get::<&str>("Zip")
+                        .ok_or_else(|| anyhow!("Zip not present"))?,
                 );
                 let city = String::from(
-                    row.get::<&str>("Addresses.City")
-                        .ok_or_else(|| anyhow!("Addresses.City not present"))?,
+                    row.get::<&str>("City")
+                        .ok_or_else(|| anyhow!("City not present"))?,
                 );
                 Some(EmployeeDetailsModel {
                     id: id.clone(),
@@ -90,6 +97,6 @@ impl Queries {
             }
             None => None,
         };
-        Ok(product)
+        Ok(employee)
     }
 }
